@@ -102,6 +102,7 @@ export default function CursorCat() {
     let nekoPosY = Math.max(32, window.innerHeight - 88);
     let mousePosX = window.innerWidth / 2;
     let mousePosY = window.innerHeight / 2;
+    let heroVisible = true;
 
     const getHomeCenter = () => {
       const home = document.querySelector<HTMLElement>("[data-oneko-home]");
@@ -125,7 +126,7 @@ export default function CursorCat() {
       nekoPosX = clamp(nekoPosX, 16, maxX);
       nekoPosY = clamp(nekoPosY, 16, maxY);
       cat.style.transform = `translate3d(${nekoPosX - 16}px, ${nekoPosY - 16}px, 0)`;
-      cat.style.opacity = "1";
+      cat.style.opacity = heroVisible && !hiddenViewport.matches ? "1" : "0";
     };
 
     const resetIdleAnimation = () => {
@@ -173,7 +174,7 @@ export default function CursorCat() {
     const frame = () => {
       frameCount += 1;
 
-      if (hiddenViewport.matches) return;
+      if (hiddenViewport.matches || !heroVisible) return;
 
       const diffX = nekoPosX - mousePosX;
       const diffY = nekoPosY - mousePosY;
@@ -221,6 +222,7 @@ export default function CursorCat() {
     };
 
     const handleMouseMove = (event: MouseEvent) => {
+      if (!heroVisible) return;
       mousePosX = event.clientX;
       mousePosY = event.clientY;
     };
@@ -236,6 +238,32 @@ export default function CursorCat() {
       applyPosition();
     };
 
+    const syncHeroVisibility = () => {
+      const heroRect = document.querySelector("#hero")?.getBoundingClientRect();
+      heroVisible = Boolean(heroRect && heroRect.bottom > 80 && heroRect.top < window.innerHeight - 80);
+      applyPosition();
+    };
+
+    const hero = document.querySelector("#hero");
+    const observer = hero
+      ? new IntersectionObserver(
+          ([entry]) => {
+            heroVisible = Boolean(entry?.isIntersecting);
+            if (heroVisible) {
+              const home = getHomeCenter();
+              if (Math.hypot(nekoPosX - home.x, nekoPosY - home.y) < CLOSE_DISTANCE * 2) {
+                nekoPosX = home.x;
+                nekoPosY = home.y;
+                mousePosX = home.x;
+                mousePosY = home.y;
+              }
+            }
+            applyPosition();
+          },
+          { threshold: 0.04 }
+        )
+      : null;
+
     if (reducedMotion.matches) {
       setSprite(cat, "idle", 0);
       applyPosition();
@@ -250,14 +278,18 @@ export default function CursorCat() {
 
     setSprite(cat, "idle", 0);
     applyPosition();
+    observer?.observe(hero as Element);
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("scroll", syncHeroVisibility, { passive: true });
     rafId = window.requestAnimationFrame(onAnimationFrame);
 
     return () => {
       window.cancelAnimationFrame(rafId);
+      observer?.disconnect();
       document.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", syncHeroVisibility);
     };
   }, []);
 

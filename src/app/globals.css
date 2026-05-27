@@ -656,6 +656,21 @@ body.hovering .cursor-ring {
   border-color: var(--fg);
 }
 
+.cursor-cat {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 352px 1696px;
+  image-rendering: pixelated;
+  transform-origin: top left;
+  will-change: transform, background-position;
+}
+
 .wrap {
   max-width: var(--max);
   margin: 0 auto;
@@ -3235,6 +3250,12 @@ header {
 
   .cursor-ring,
   .cursor-dot {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .cursor-cat {
     display: none;
   }
 }

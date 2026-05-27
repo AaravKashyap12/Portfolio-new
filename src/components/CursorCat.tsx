@@ -8,10 +8,9 @@ const SCALE = 2;
 const SPRITE_URL = "/sprites/cat/cat.png";
 
 const CAT_TUNING = {
-  baseFollow: 0.055,
-  distanceFollow: 0.00042,
-  maxFollow: 0.2,
-  introFollow: 0.026,
+  walkSpeedPxPerSecond: 120,
+  introSpeedPxPerSecond: 135,
+  escapeSpeedPxPerSecond: 150,
   animationFpsMultiplier: 1,
   cursorOffsetX: 18,
   cursorOffsetY: 22,
@@ -23,6 +22,7 @@ const CAT_TUNING = {
   clickDistance: 92,
   pawDurationMs: 850,
   observeDistance: 96,
+  obstructionPadding: 12,
 };
 
 const CAT_ANIMS = {
@@ -46,7 +46,28 @@ const CAT_ANIMS = {
 
 type CatAnimationName = keyof typeof CAT_ANIMS;
 
-const IDLE_ANIMS: CatAnimationName[] = ["meowSit", "yawnSit", "washSit", "sleep"];
+const IDLE_ANIMS: CatAnimationName[] = [
+  "meowSit",
+  "yawnSit",
+  "washSit",
+  "eatDown",
+  "scratchLeft",
+  "scratchRight",
+  "hindLegs",
+];
+
+const OBSTRUCTION_SELECTORS = [
+  "a",
+  "button",
+  ".custom-tweet",
+  ".hero-stats",
+  ".proj-card",
+  ".pm-diagram",
+  ".expertise-band",
+  ".service-card",
+  ".contact-action",
+  ".github-graph-panel",
+].join(",");
 
 type MouseSample = {
   x: number;
@@ -68,6 +89,49 @@ function setSpriteFrame(element: HTMLDivElement, animationName: CatAnimationName
 
 function pickIdleAnimation() {
   return IDLE_ANIMS[Math.floor(Math.random() * IDLE_ANIMS.length)];
+}
+
+function rectsOverlap(a: DOMRect, b: DOMRect) {
+  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+}
+
+function makeCatRect(x: number, y: number) {
+  const size = FRAME_SIZE * SCALE;
+  return new DOMRect(x, y, size, size);
+}
+
+function findObstruction(cat: HTMLDivElement, catRect: DOMRect) {
+  const elements = Array.from(document.querySelectorAll(OBSTRUCTION_SELECTORS));
+
+  return elements.find((element) => {
+    if (element === cat || element.contains(cat)) return false;
+
+    const rect = element.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return false;
+
+    const style = window.getComputedStyle(element);
+    if (style.visibility === "hidden" || style.display === "none" || Number(style.opacity) === 0) return false;
+
+    return rectsOverlap(catRect, rect);
+  });
+}
+
+function moveToward(
+  position: { x: number; y: number },
+  target: { x: number; y: number },
+  speedPxPerSecond: number,
+  deltaMs: number
+) {
+  const dx = target.x - position.x;
+  const dy = target.y - position.y;
+  const distance = Math.hypot(dx, dy);
+  if (distance <= 0.01) return { dx, dy, distance };
+
+  const step = Math.min(distance, speedPxPerSecond * (deltaMs / 1000));
+  position.x += (dx / distance) * step;
+  position.y += (dy / distance) * step;
+
+  return { dx, dy, distance };
 }
 
 function isNearSocialLink(event: MouseEvent) {
@@ -105,6 +169,8 @@ export default function CursorCat() {
     let forcedAnimation: CatAnimationName | null = null;
     let forcedUntil = 0;
     let observeUntil = 0;
+    let escapeUntil = 0;
+    let escapeDirection: "up" | "down" = "down";
     let lastMouseMove = performance.now();
     let introComplete = false;
     let hasMouseInput = false;
@@ -212,24 +278,46 @@ export default function CursorCat() {
         }
       }
 
-      const dx = targetPosition.x - catPosition.x;
-      const dy = targetPosition.y - catPosition.y;
-      const distance = Math.hypot(dx, dy);
+      let dx = targetPosition.x - catPosition.x;
+      let dy = targetPosition.y - catPosition.y;
+      let distance = Math.hypot(dx, dy);
       const idleTime = timestamp - lastMouseMove;
+      let shouldEscape = false;
+
+      if (introComplete) {
+        const obstruction = findObstruction(cat, makeCatRect(catPosition.x, catPosition.y));
+        if (obstruction) {
+          const rect = obstruction.getBoundingClientRect();
+          const catCenterY = catPosition.y + (FRAME_SIZE * SCALE) / 2;
+          const objectCenterY = rect.top + rect.height / 2;
+          escapeDirection = catCenterY < objectCenterY ? "up" : "down";
+          targetPosition.x = catPosition.x;
+          targetPosition.y =
+            escapeDirection === "up"
+              ? rect.top - FRAME_SIZE * SCALE - CAT_TUNING.obstructionPadding
+              : rect.bottom + CAT_TUNING.obstructionPadding;
+          escapeUntil = timestamp + 450;
+        }
+
+        shouldEscape = timestamp < escapeUntil;
+        targetPosition.y = clamp(targetPosition.y, 8, window.innerHeight - FRAME_SIZE * SCALE - 8);
+        dx = targetPosition.x - catPosition.x;
+        dy = targetPosition.y - catPosition.y;
+        distance = Math.hypot(dx, dy);
+      }
+
       const shouldWalkToIntro = !introComplete && distance > CAT_TUNING.introArrivalDistance;
-      const shouldWalkToMouse = introComplete && hasMouseInput && distance > 5 && idleTime < CAT_TUNING.idleDelayMs;
-      const shouldWalk = shouldWalkToIntro || shouldWalkToMouse;
+      const shouldWalkToMouse =
+        introComplete && !shouldEscape && hasMouseInput && distance > 5 && idleTime < CAT_TUNING.idleDelayMs;
+      const shouldWalk = shouldWalkToIntro || shouldWalkToMouse || shouldEscape;
 
       if (shouldWalk) {
-        const follow = shouldWalkToIntro
-          ? CAT_TUNING.introFollow
-          : clamp(
-              CAT_TUNING.baseFollow + distance * CAT_TUNING.distanceFollow,
-              CAT_TUNING.baseFollow,
-              CAT_TUNING.maxFollow
-            );
-        catPosition.x += dx * follow * (delta / 16.67);
-        catPosition.y += dy * follow * (delta / 16.67);
+        const speed = shouldEscape
+          ? CAT_TUNING.escapeSpeedPxPerSecond
+          : shouldWalkToIntro
+            ? CAT_TUNING.introSpeedPxPerSecond
+            : CAT_TUNING.walkSpeedPxPerSecond;
+        moveToward(catPosition, targetPosition, speed, delta);
       }
 
       catPosition.x = clamp(catPosition.x, 8, window.innerWidth - FRAME_SIZE * SCALE - 8);
@@ -246,7 +334,9 @@ export default function CursorCat() {
       } else {
         forcedAnimation = null;
 
-        if (timestamp < observeUntil && !shouldWalk) {
+        if (shouldEscape) {
+          setAnimation(escapeDirection === "up" ? "walkUp" : "walkDown");
+        } else if (timestamp < observeUntil && !shouldWalk) {
           setAnimation("hindLegs");
         } else if (shouldWalk) {
           if (Math.abs(dx) >= Math.abs(dy)) {

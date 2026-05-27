@@ -657,18 +657,21 @@ body.hovering .cursor-ring {
 }
 
 .cursor-cat {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  z-index: 9998;
+  z-index: 4;
   width: 32px;
   height: 32px;
   pointer-events: none;
   background-repeat: no-repeat;
   background-size: 352px 1696px;
   image-rendering: pixelated;
+  opacity: 0;
   transform-origin: top left;
+  transition: opacity 0.18s ease;
   will-change: transform, background-position;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.32));
 }
 
 .wrap {

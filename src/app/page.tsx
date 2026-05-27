@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { motion, AnimatePresence } from "framer-motion";
+import CursorCat from "../components/CursorCat";
 import GitHubGraph from "../components/GitHubGraph";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -911,6 +912,7 @@ export default function Portfolio() {
 
       <section id="hero">
         <canvas id="gl-canvas" />
+        <CursorCat />
 
         <div className="hero-tweet-wrap">
           <div className="hero-tweet-label">LATEST THINKING</div>

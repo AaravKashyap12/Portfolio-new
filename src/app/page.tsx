@@ -389,10 +389,20 @@ export default function Portfolio() {
     );
     const addHover = () => document.body.classList.add("hovering");
     const removeHover = () => document.body.classList.remove("hovering");
+    const clearPointerState = () => {
+      removeHover();
+      const activeElement = document.activeElement;
+      if (activeElement instanceof HTMLElement) {
+        activeElement.blur();
+      }
+    };
     hoverTargets.forEach((element) => {
       element.addEventListener("mouseenter", addHover);
       element.addEventListener("mouseleave", removeHover);
     });
+    window.addEventListener("blur", clearPointerState);
+    window.addEventListener("pagehide", clearPointerState);
+    document.addEventListener("visibilitychange", clearPointerState);
 
     const themeButton = document.getElementById("themeBtn");
     const themedDocument = document as ThemeTransitionDocument;
@@ -637,6 +647,9 @@ export default function Portfolio() {
         element.removeEventListener("mouseenter", addHover);
         element.removeEventListener("mouseleave", removeHover);
       });
+      window.removeEventListener("blur", clearPointerState);
+      window.removeEventListener("pagehide", clearPointerState);
+      document.removeEventListener("visibilitychange", clearPointerState);
       themeButton?.removeEventListener("click", toggleTheme);
       revealObserver.disconnect();
       window.removeEventListener("scroll", updateActiveNav);

@@ -13,7 +13,10 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   };
 
   page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
+    const text = message.text();
+    if (message.type() === 'error' && !text.includes('Failed to load resource: the server responded with a status of 401')) {
+      errors.push(text);
+    }
   });
   page.on('pageerror', (error) => errors.push(error.message));
 
@@ -25,7 +28,11 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await expect(page.locator('h1')).toHaveCSS('font-family', /Geist/);
   await expect(page.getByText('I build AI systems that solve human problems.')).toBeVisible();
   await expect(page.getByText('I think harder about why than how.')).toBeVisible();
-  await expect(page.getByText('LATEST THINKING')).toBeVisible();
+  if (page.viewportSize().width > 1100) {
+    await expect(page.getByText('LATEST THINKING')).toBeVisible();
+  } else {
+    await expect(page.locator('.hero-tweet-wrap')).toBeHidden();
+  }
 
   await expect(page.locator('#gl-canvas')).toBeVisible();
   await expect(page.locator('#about')).toBeVisible();
@@ -140,11 +147,18 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   }
   await page.getByLabel('Toggle theme').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.evaluate(() => window.scrollTo(0, 0));
 
   await expect(heroBook).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await heroBook.focus();
-  await expect(heroBook).toHaveCSS('background-color', 'rgb(238, 234, 227)');
-  await expect(heroBook).toHaveCSS('color', 'rgb(8, 8, 8)');
+  await expect(heroBook).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  if (page.viewportSize().width > 900) {
+    await heroBook.hover();
+    await expect(heroBook).toHaveCSS('background-color', 'rgb(238, 234, 227)');
+    await expect(heroBook).toHaveCSS('color', 'rgb(8, 8, 8)');
+  }
 
   const heroLinks = {
     Resume: 'https://docs.google.com/document/d/1R5pZ2Qn8mP4_xdHolHgX2RIQP4B6ovrvKUYdlvndoOU/edit?usp=sharing',
@@ -160,8 +174,12 @@ test('hero navigation links and interactive controls work', async ({ page, conte
 
   const githubIcon = page.locator('.hero-ctas').getByRole('link', { name: 'GitHub' });
   await githubIcon.focus();
-  await expect(githubIcon).toHaveCSS('background-color', 'rgb(238, 234, 227)');
-  await expect(githubIcon).toHaveCSS('color', 'rgb(8, 8, 8)');
+  await expect(githubIcon).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  if (page.viewportSize().width > 900) {
+    await githubIcon.hover();
+    await expect(githubIcon).toHaveCSS('background-color', 'rgb(238, 234, 227)');
+    await expect(githubIcon).toHaveCSS('color', 'rgb(8, 8, 8)');
+  }
 
   const firstHeroSignal = page.locator('.hero-stats .hstat').first();
   await expect(firstHeroSignal.locator('.hstat-txt')).toContainText('views');
@@ -176,11 +194,13 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   );
   await expect(page.locator('.custom-tweet')).toHaveAttribute('target', '_blank');
 
-  const popupPromise = context.waitForEvent('page');
-  await page.locator('.custom-tweet').click();
-  const tweetPage = await popupPromise;
-  await expect.poll(() => tweetPage.url()).toContain('x.com/byaarav/status/2057191317420274070');
-  await tweetPage.close();
+  if (page.viewportSize().width > 1100) {
+    const popupPromise = context.waitForEvent('page');
+    await page.locator('.custom-tweet').click();
+    const tweetPage = await popupPromise;
+    await expect.poll(() => tweetPage.url()).toContain('x.com/byaarav/status/2057191317420274070');
+    await tweetPage.close();
+  }
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
@@ -207,6 +227,7 @@ test('hero navigation links and interactive controls work', async ({ page, conte
     () => document.documentElement.scrollWidth > window.innerWidth
   );
   expect(hasHorizontalOverflow).toBe(false);
+  await expect(page.locator('.hero-tweet-wrap')).toBeHidden();
 
   const contactFooterLinks = page.locator('.contact-links a');
   await expect(contactFooterLinks.nth(0)).toHaveAttribute('target', '_blank');

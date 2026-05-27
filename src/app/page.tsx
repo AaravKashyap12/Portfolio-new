@@ -889,7 +889,12 @@ export default function Portfolio() {
 
       <header>
         <div className="nav-wrap">
-          <a href="#hero" className="nav-brand">Aarav Kashyap Singh</a>
+          <div className="nav-brand-row">
+            <a href="#hero" className="nav-brand">Aarav Kashyap Singh</a>
+            <span className="oneko-home" data-oneko-home aria-hidden="true">
+              <span className="oneko-home-grid" />
+            </span>
+          </div>
           <ul className="nav-links">
             <li><a href="#about">Experience</a></li>
             <li><a href="#projects">Work</a></li>

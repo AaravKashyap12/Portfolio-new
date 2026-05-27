@@ -103,6 +103,22 @@ export default function CursorCat() {
     let mousePosX = window.innerWidth / 2;
     let mousePosY = window.innerHeight / 2;
 
+    const getHomeCenter = () => {
+      const home = document.querySelector<HTMLElement>("[data-oneko-home]");
+      if (!home) {
+        return {
+          x: 32,
+          y: Math.max(32, window.innerHeight - 88),
+        };
+      }
+
+      const rect = home.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      };
+    };
+
     const applyPosition = () => {
       const maxX = Math.max(16, window.innerWidth - 16);
       const maxY = Math.max(16, window.innerHeight - 16);
@@ -210,6 +226,13 @@ export default function CursorCat() {
     };
 
     const handleResize = () => {
+      const home = getHomeCenter();
+      if (Math.hypot(nekoPosX - mousePosX, nekoPosY - mousePosY) < CLOSE_DISTANCE) {
+        nekoPosX = home.x;
+        nekoPosY = home.y;
+        mousePosX = home.x;
+        mousePosY = home.y;
+      }
       applyPosition();
     };
 
@@ -218,6 +241,12 @@ export default function CursorCat() {
       applyPosition();
       return;
     }
+
+    const home = getHomeCenter();
+    nekoPosX = home.x;
+    nekoPosY = home.y;
+    mousePosX = home.x;
+    mousePosY = home.y;
 
     setSprite(cat, "idle", 0);
     applyPosition();

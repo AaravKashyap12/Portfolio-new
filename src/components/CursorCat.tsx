@@ -11,9 +11,12 @@ const CAT_TUNING = {
   baseFollow: 0.055,
   distanceFollow: 0.00042,
   maxFollow: 0.2,
+  introFollow: 0.026,
   animationFpsMultiplier: 1,
   cursorOffsetX: 18,
   cursorOffsetY: 22,
+  mouseFollowDelayMs: 850,
+  introArrivalDistance: 18,
   idleDelayMs: 3_000,
   sleepDelayMs: 10_000,
   idleSwapMs: 4_500,
@@ -44,6 +47,12 @@ const CAT_ANIMS = {
 type CatAnimationName = keyof typeof CAT_ANIMS;
 
 const IDLE_ANIMS: CatAnimationName[] = ["meowSit", "yawnSit", "washSit", "sleep"];
+
+type MouseSample = {
+  x: number;
+  y: number;
+  timestamp: number;
+};
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -97,14 +106,30 @@ export default function CursorCat() {
     let forcedUntil = 0;
     let observeUntil = 0;
     let lastMouseMove = performance.now();
+    let introComplete = false;
+    let hasMouseInput = false;
+    const mouseSamples: MouseSample[] = [];
 
     const catPosition = {
       x: 24,
       y: Math.max(80, window.innerHeight - FRAME_SIZE * SCALE - 96),
     };
     const targetPosition = {
-      x: window.innerWidth * 0.32,
-      y: window.innerHeight * 0.72,
+      x: 80,
+      y: 72,
+    };
+
+    const getIntroTarget = () => {
+      const brand = document.querySelector(".nav-brand");
+      if (brand) {
+        const rect = brand.getBoundingClientRect();
+        return {
+          x: rect.left + 8,
+          y: rect.bottom + 14,
+        };
+      }
+
+      return { x: 80, y: 72 };
     };
 
     const applyTransform = () => {
@@ -119,9 +144,17 @@ export default function CursorCat() {
     };
 
     const handleMouseMove = (event: MouseEvent) => {
-      targetPosition.x = event.clientX + CAT_TUNING.cursorOffsetX;
-      targetPosition.y = event.clientY + CAT_TUNING.cursorOffsetY;
-      lastMouseMove = performance.now();
+      const now = performance.now();
+      mouseSamples.push({
+        x: event.clientX + CAT_TUNING.cursorOffsetX,
+        y: event.clientY + CAT_TUNING.cursorOffsetY,
+        timestamp: now,
+      });
+      hasMouseInput = true;
+      if (mouseSamples.length > 40) {
+        mouseSamples.splice(0, mouseSamples.length - 40);
+      }
+      lastMouseMove = now;
 
       if (isNearSocialLink(event)) {
         observeUntil = lastMouseMove + 1_300;
@@ -142,6 +175,9 @@ export default function CursorCat() {
     const syncStaticFrame = () => {
       catPosition.x = 24;
       catPosition.y = Math.max(80, window.innerHeight - FRAME_SIZE * SCALE - 96);
+      const introTarget = getIntroTarget();
+      targetPosition.x = introTarget.x;
+      targetPosition.y = introTarget.y;
       applyTransform();
       setSpriteFrame(cat, "sleep", 0);
     };
@@ -155,18 +191,43 @@ export default function CursorCat() {
         return;
       }
 
+      if (!introComplete) {
+        const introTarget = getIntroTarget();
+        targetPosition.x = introTarget.x;
+        targetPosition.y = introTarget.y;
+      } else {
+        let maturedSampleIndex = -1;
+        for (let i = mouseSamples.length - 1; i >= 0; i -= 1) {
+          if (timestamp - mouseSamples[i].timestamp >= CAT_TUNING.mouseFollowDelayMs) {
+            maturedSampleIndex = i;
+            break;
+          }
+        }
+
+        if (maturedSampleIndex >= 0) {
+          const sample = mouseSamples[maturedSampleIndex];
+          targetPosition.x = sample.x;
+          targetPosition.y = sample.y;
+          mouseSamples.splice(0, maturedSampleIndex + 1);
+        }
+      }
+
       const dx = targetPosition.x - catPosition.x;
       const dy = targetPosition.y - catPosition.y;
       const distance = Math.hypot(dx, dy);
       const idleTime = timestamp - lastMouseMove;
-      const shouldWalk = distance > 5 && idleTime < CAT_TUNING.idleDelayMs;
+      const shouldWalkToIntro = !introComplete && distance > CAT_TUNING.introArrivalDistance;
+      const shouldWalkToMouse = introComplete && hasMouseInput && distance > 5 && idleTime < CAT_TUNING.idleDelayMs;
+      const shouldWalk = shouldWalkToIntro || shouldWalkToMouse;
 
       if (shouldWalk) {
-        const follow = clamp(
-          CAT_TUNING.baseFollow + distance * CAT_TUNING.distanceFollow,
-          CAT_TUNING.baseFollow,
-          CAT_TUNING.maxFollow
-        );
+        const follow = shouldWalkToIntro
+          ? CAT_TUNING.introFollow
+          : clamp(
+              CAT_TUNING.baseFollow + distance * CAT_TUNING.distanceFollow,
+              CAT_TUNING.baseFollow,
+              CAT_TUNING.maxFollow
+            );
         catPosition.x += dx * follow * (delta / 16.67);
         catPosition.y += dy * follow * (delta / 16.67);
       }
@@ -174,6 +235,11 @@ export default function CursorCat() {
       catPosition.x = clamp(catPosition.x, 8, window.innerWidth - FRAME_SIZE * SCALE - 8);
       catPosition.y = clamp(catPosition.y, 8, window.innerHeight - FRAME_SIZE * SCALE - 8);
       applyTransform();
+
+      if (!introComplete && distance <= CAT_TUNING.introArrivalDistance) {
+        introComplete = true;
+        lastMouseMove = timestamp - CAT_TUNING.idleDelayMs;
+      }
 
       if (forcedAnimation && timestamp < forcedUntil) {
         setAnimation(forcedAnimation);

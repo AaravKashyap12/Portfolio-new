@@ -956,7 +956,7 @@ export default function Portfolio() {
             <span className="eyebrow-text">AI Engineer &nbsp;/&nbsp; Full Stack Developer &nbsp;/&nbsp; Builder</span>
           </div>
 
-          <h1 className="hero-headline" aria-label="Aarav Kashyap Singh">
+          <h1 className="hero-headline" aria-label="Aarav Kashyap Singh" data-cat-target="name">
             <div className="word"><span>AARAV</span></div>
             <div className="word"><span>KASHYAP</span></div>
             <div className="word"><span>SINGH</span></div>

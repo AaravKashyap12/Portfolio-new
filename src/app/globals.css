@@ -1020,6 +1020,29 @@ header {
   outline: none;
 }
 
+.btn-outline:focus:not(:hover),
+.social-icon:focus:not(:hover) {
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-outline:focus:not(:hover) {
+  color: var(--fg2);
+  border-color: var(--line2);
+}
+
+.social-icon:focus:not(:hover) {
+  color: var(--fg);
+  border-color: var(--line);
+}
+
+.btn-outline:focus-visible:not(:hover),
+.social-icon:focus-visible:not(:hover) {
+  outline: 1px solid var(--fg2);
+  outline-offset: 4px;
+}
+
 .social-icon svg {
   width: 17px;
   height: 17px;

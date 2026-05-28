@@ -158,7 +158,8 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await heroBook.focus();
   await expect(heroBook).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   if (page.viewportSize().width > 900) {
-    await heroBook.hover();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await heroBook.hover({ force: true });
     await expect(heroBook).toHaveCSS('background-color', 'rgb(238, 234, 227)');
     await expect(heroBook).toHaveCSS('color', 'rgb(8, 8, 8)');
   }
@@ -179,7 +180,8 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await githubIcon.focus();
   await expect(githubIcon).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   if (page.viewportSize().width > 900) {
-    await githubIcon.hover();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await githubIcon.hover({ force: true });
     await expect(githubIcon).toHaveCSS('background-color', 'rgb(238, 234, 227)');
     await expect(githubIcon).toHaveCSS('color', 'rgb(8, 8, 8)');
   }
@@ -243,6 +245,52 @@ test('hero navigation links and interactive controls work', async ({ page, conte
     return { bottom: rect.bottom, top: rect.top };
   });
   expect(mobileHeroControls.bottom).toBeLessThanOrEqual(844);
+
+  await page.goto('/#projects');
+  await page.locator('.proj-card').first().click({ force: true });
+  await expect(page.locator('.pm-title')).toHaveText('ClearFlow');
+  await page.waitForTimeout(900);
+  const mobileModalBounds = await page.locator('.proj-modal').evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      left: Math.round(rect.left),
+      right: Math.round(rect.right),
+      top: Math.round(rect.top),
+      bottom: Math.round(rect.bottom),
+    };
+  });
+  expect(mobileModalBounds.left).toBeGreaterThanOrEqual(0);
+  expect(mobileModalBounds.right).toBeLessThanOrEqual(mobileModalBounds.viewportWidth);
+  expect(mobileModalBounds.top).toBeGreaterThanOrEqual(0);
+  expect(mobileModalBounds.bottom).toBeLessThanOrEqual(mobileModalBounds.viewportHeight);
+
+  const mobileModalLayout = await page.locator('.pm-body').evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      viewportWidth: window.innerWidth,
+      columns: getComputedStyle(element).gridTemplateColumns,
+      right: Math.round(rect.right),
+      width: Math.round(rect.width),
+    };
+  });
+  expect(mobileModalLayout.columns).not.toContain('0px');
+  expect(mobileModalLayout.right).toBeLessThanOrEqual(mobileModalLayout.viewportWidth);
+  expect(mobileModalLayout.width).toBeGreaterThan(300);
+
+  const mobileDiagramBounds = await page.locator('.pm-diagram').evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      viewportWidth: window.innerWidth,
+      left: Math.round(rect.left),
+      right: Math.round(rect.right),
+      width: Math.round(rect.width),
+    };
+  });
+  expect(mobileDiagramBounds.left).toBeGreaterThanOrEqual(0);
+  expect(mobileDiagramBounds.right).toBeLessThanOrEqual(mobileDiagramBounds.viewportWidth);
+  expect(mobileDiagramBounds.width).toBeLessThanOrEqual(mobileDiagramBounds.viewportWidth);
 
   expect(errors).toEqual([]);
 });

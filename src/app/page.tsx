@@ -891,9 +891,16 @@ export default function Portfolio() {
         <div className="nav-wrap">
           <div className="nav-brand-row">
             <a href="#hero" className="nav-brand">Aarav Kashyap Singh</a>
-            <span className="oneko-home" data-oneko-home aria-hidden="true">
+            <button
+              className="oneko-home"
+              data-oneko-home
+              type="button"
+              aria-label="Send Oneko home"
+              title="Send Oneko home"
+              onClick={() => window.dispatchEvent(new Event("oneko:return-home"))}
+            >
               <span className="oneko-home-grid" />
-            </span>
+            </button>
           </div>
           <ul className="nav-links">
             <li><a href="#about">Experience</a></li>

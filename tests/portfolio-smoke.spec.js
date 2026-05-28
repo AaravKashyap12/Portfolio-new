@@ -25,7 +25,10 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await expect(page.locator('link[rel="icon"]').first()).toHaveAttribute('href', /favicon\.ico/);
   await expect(page.locator('h1')).toHaveAttribute('aria-label', 'Aarav Kashyap Singh');
   await expect(page.locator('body')).toHaveCSS('font-family', /Geist/);
-  await expect(page.locator('h1')).toHaveCSS('font-family', /Geist/);
+  await expect(page.locator('h1')).toHaveCSS('font-family', /Inter/);
+  await expect(page.getByLabel('Send Oneko home')).toBeVisible();
+  await page.getByLabel('Send Oneko home').click();
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.getByText('I build AI systems that solve human problems.')).toBeVisible();
   await expect(page.getByText('I think harder about why than how.')).toBeVisible();
   if (page.viewportSize().width > 1100) {

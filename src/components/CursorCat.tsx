@@ -238,6 +238,18 @@ export default function CursorCat() {
       applyPosition();
     };
 
+    const returnHome = () => {
+      const home = getHomeCenter();
+      nekoPosX = home.x;
+      nekoPosY = home.y;
+      mousePosX = home.x;
+      mousePosY = home.y;
+      idleTime = 0;
+      resetIdleAnimation();
+      setSprite(cat, "idle", 0);
+      applyPosition();
+    };
+
     const syncHeroVisibility = () => {
       const heroRect = document.querySelector("#hero")?.getBoundingClientRect();
       heroVisible = Boolean(heroRect && heroRect.bottom > 80 && heroRect.top < window.innerHeight - 80);
@@ -282,6 +294,7 @@ export default function CursorCat() {
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
     window.addEventListener("scroll", syncHeroVisibility, { passive: true });
+    window.addEventListener("oneko:return-home", returnHome);
     rafId = window.requestAnimationFrame(onAnimationFrame);
 
     return () => {
@@ -290,6 +303,7 @@ export default function CursorCat() {
       document.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", syncHeroVisibility);
+      window.removeEventListener("oneko:return-home", returnHome);
     };
   }, []);
 

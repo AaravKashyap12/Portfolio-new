@@ -8,11 +8,29 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.aaravkashyap.live"),
   title: "Aarav Kashyap Singh - AI Engineer",
   description:
     "Personal portfolio of Aarav Kashyap Singh, an AI Engineer and Full Stack Developer building intelligent products, backend workflows, and automation tools.",
   robots: "index, follow",
   authors: [{ name: "Aarav Kashyap Singh", url: "https://github.com/AaravKashyap12" }],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Aarav Kashyap Singh - AI Engineer",
+    description:
+      "AI Engineer and Full Stack Developer building intelligent products, backend workflows, and automation tools.",
+    url: "https://www.aaravkashyap.live",
+    siteName: "Aarav Kashyap Singh",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aarav Kashyap Singh - AI Engineer",
+    description:
+      "AI Engineer and Full Stack Developer building intelligent products, backend workflows, and automation tools.",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },

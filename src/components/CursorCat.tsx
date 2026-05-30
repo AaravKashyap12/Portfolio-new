@@ -131,6 +131,15 @@ export default function CursorCat() {
       cat.style.opacity = heroVisible && !hiddenViewport.matches ? "1" : "0";
     };
 
+    const pinToHome = () => {
+      const home = getHomeCenter();
+      nekoPosX = home.x;
+      nekoPosY = home.y;
+      mousePosX = home.x;
+      mousePosY = home.y;
+      applyPosition();
+    };
+
     const resetIdleAnimation = () => {
       idleAnimation = null;
       idleAnimationFrame = 0;
@@ -182,9 +191,14 @@ export default function CursorCat() {
 
       if (hiddenViewport.matches || !heroVisible) return;
 
-      const home = getHomeCenter();
-      const targetX = unlocked ? mousePosX : home.x;
-      const targetY = unlocked ? mousePosY : home.y;
+      if (!unlocked) {
+        pinToHome();
+        idle();
+        return;
+      }
+
+      const targetX = mousePosX;
+      const targetY = mousePosY;
       const diffX = nekoPosX - targetX;
       const diffY = nekoPosY - targetY;
       const distance = Math.hypot(diffX, diffY);
@@ -237,27 +251,19 @@ export default function CursorCat() {
     };
 
     const handleResize = () => {
-      const home = getHomeCenter();
-      if (Math.hypot(nekoPosX - mousePosX, nekoPosY - mousePosY) < CLOSE_DISTANCE) {
-        nekoPosX = home.x;
-        nekoPosY = home.y;
-        mousePosX = home.x;
-        mousePosY = home.y;
+      if (!unlocked) {
+        pinToHome();
+        return;
       }
       applyPosition();
     };
 
     const returnHome = () => {
       unlocked = false;
-      const home = getHomeCenter();
-      nekoPosX = home.x;
-      nekoPosY = home.y;
-      mousePosX = home.x;
-      mousePosY = home.y;
       idleTime = 0;
       resetIdleAnimation();
       setSprite(cat, "idle", 0);
-      applyPosition();
+      pinToHome();
       announceState(false);
     };
 
@@ -285,14 +291,9 @@ export default function CursorCat() {
       ? new IntersectionObserver(
           ([entry]) => {
             heroVisible = Boolean(entry?.isIntersecting);
-            if (heroVisible) {
-              const home = getHomeCenter();
-              if (Math.hypot(nekoPosX - home.x, nekoPosY - home.y) < CLOSE_DISTANCE * 2) {
-                nekoPosX = home.x;
-                nekoPosY = home.y;
-                mousePosX = home.x;
-                mousePosY = home.y;
-              }
+            if (heroVisible && !unlocked) {
+              pinToHome();
+              return;
             }
             applyPosition();
           },
@@ -306,16 +307,16 @@ export default function CursorCat() {
       return;
     }
 
-    const home = getHomeCenter();
-    nekoPosX = home.x;
-    nekoPosY = home.y;
-    mousePosX = home.x;
-    mousePosY = home.y;
     unlocked = false;
 
     setSprite(cat, "idle", 0);
-    applyPosition();
+    pinToHome();
     announceState(false);
+    const homeSyncTimers = [
+      window.setTimeout(pinToHome, 0),
+      window.setTimeout(pinToHome, 250),
+      window.setTimeout(pinToHome, 800),
+    ];
     observer?.observe(hero as Element);
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
@@ -326,6 +327,7 @@ export default function CursorCat() {
 
     return () => {
       window.cancelAnimationFrame(rafId);
+      homeSyncTimers.forEach((timer) => window.clearTimeout(timer));
       observer?.disconnect();
       document.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);

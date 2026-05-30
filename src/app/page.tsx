@@ -327,6 +327,8 @@ export default function Portfolio() {
   const [activeProject, setActiveProject] = useState<typeof projects[0] | null>(null);
   const [expandedArchitecture, setExpandedArchitecture] = useState(false);
   const [heroStats, setHeroStats] = useState({ totalViews: 0, liveViewers: 1 });
+  const [onekoAwake, setOnekoAwake] = useState(false);
+  const [onekoPing, setOnekoPing] = useState(false);
   const contactRef = useRef<HTMLElement | null>(null);
   const marqueeRef = useRef<HTMLDivElement | null>(null);
   const servicesRef = useRef<HTMLElement | null>(null);
@@ -659,6 +661,23 @@ export default function Portfolio() {
   }, []);
 
   useEffect(() => {
+    const handleOnekoState = (event: Event) => {
+      const detail = (event as CustomEvent<{ awake?: boolean; ping?: boolean }>).detail;
+      setOnekoAwake(Boolean(detail?.awake));
+      if (detail?.ping) {
+        setOnekoPing(true);
+        window.setTimeout(() => setOnekoPing(false), 900);
+      }
+    };
+
+    window.addEventListener("oneko:state", handleOnekoState);
+
+    return () => {
+      window.removeEventListener("oneko:state", handleOnekoState);
+    };
+  }, []);
+
+  useEffect(() => {
     const sessionKey = "aarav-portfolio-session";
     const sessionId = window.sessionStorage.getItem(sessionKey) ?? crypto.randomUUID();
     window.sessionStorage.setItem(sessionKey, sessionId);
@@ -892,14 +911,20 @@ export default function Portfolio() {
           <div className="nav-brand-row">
             <a href="#hero" className="nav-brand">Aarav Kashyap Singh</a>
             <button
-              className="oneko-home"
+              className={`oneko-home ${onekoAwake ? "is-awake" : ""} ${onekoPing ? "is-pinging" : ""}`}
               data-oneko-home
               type="button"
-              aria-label="Send Oneko home"
-              title="Send Oneko home"
-              onClick={() => window.dispatchEvent(new Event("oneko:return-home"))}
+              aria-pressed={onekoAwake}
+              aria-label={onekoAwake ? "Send Oneko home" : "Wake Oneko"}
+              title={onekoAwake ? "Send Oneko home" : "Wake Oneko"}
+              onClick={() => window.dispatchEvent(new Event("oneko:toggle-home"))}
             >
-              <span className="oneko-home-grid" />
+              <span className="oneko-home-roof" />
+              <span className="oneko-home-face">
+                <span />
+                <span />
+              </span>
+              <span className="oneko-home-mark">!</span>
             </button>
           </div>
           <ul className="nav-links">
@@ -911,7 +936,7 @@ export default function Portfolio() {
           <div className="nav-right">
             <button className="theme-toggle" id="themeBtn" aria-label="Toggle theme">☀</button>
             <a
-              className="nav-cta"
+              className="nav-cta call-cta"
               href="https://cal.com/aaravkashyap/meetings"
               target="_blank"
               rel="noopener noreferrer"
@@ -983,7 +1008,7 @@ export default function Portfolio() {
 
           <div className="hero-ctas">
             <a
-              className="btn-outline"
+              className="btn-outline call-cta hero-call-cta"
               href="https://cal.com/aaravkashyap/meetings"
               target="_blank"
               rel="noopener noreferrer"

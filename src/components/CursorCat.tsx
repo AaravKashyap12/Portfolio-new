@@ -7,6 +7,7 @@ const FRAME_SIZE = 32;
 const NEKO_SPEED = 10;
 const FRAME_INTERVAL_MS = 100;
 const CLOSE_DISTANCE = 48;
+const HOME_PERCH_Y_OFFSET = 3;
 
 const spriteSets = {
   idle: [[-3, -3]],
@@ -103,6 +104,7 @@ export default function CursorCat() {
     let mousePosX = window.innerWidth / 2;
     let mousePosY = window.innerHeight / 2;
     let heroVisible = true;
+    let unlocked = false;
 
     const getHomeCenter = () => {
       const home = document.querySelector<HTMLElement>("[data-oneko-home]");
@@ -116,7 +118,7 @@ export default function CursorCat() {
       const rect = home.getBoundingClientRect();
       return {
         x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
+        y: rect.top + rect.height / 2 + HOME_PERCH_Y_OFFSET,
       };
     };
 
@@ -132,6 +134,10 @@ export default function CursorCat() {
     const resetIdleAnimation = () => {
       idleAnimation = null;
       idleAnimationFrame = 0;
+    };
+
+    const announceState = (ping = false) => {
+      window.dispatchEvent(new CustomEvent("oneko:state", { detail: { awake: unlocked, ping } }));
     };
 
     const idle = () => {
@@ -176,8 +182,11 @@ export default function CursorCat() {
 
       if (hiddenViewport.matches || !heroVisible) return;
 
-      const diffX = nekoPosX - mousePosX;
-      const diffY = nekoPosY - mousePosY;
+      const home = getHomeCenter();
+      const targetX = unlocked ? mousePosX : home.x;
+      const targetY = unlocked ? mousePosY : home.y;
+      const diffX = nekoPosX - targetX;
+      const diffY = nekoPosY - targetY;
       const distance = Math.hypot(diffX, diffY);
 
       if (distance < NEKO_SPEED || distance < CLOSE_DISTANCE) {
@@ -187,7 +196,7 @@ export default function CursorCat() {
 
       resetIdleAnimation();
 
-      if (idleTime > 1) {
+      if (unlocked && idleTime > 1) {
         setSprite(cat, "alert", 0);
         idleTime = Math.min(idleTime, 7) - 1;
         return;
@@ -239,6 +248,7 @@ export default function CursorCat() {
     };
 
     const returnHome = () => {
+      unlocked = false;
       const home = getHomeCenter();
       nekoPosX = home.x;
       nekoPosY = home.y;
@@ -248,6 +258,20 @@ export default function CursorCat() {
       resetIdleAnimation();
       setSprite(cat, "idle", 0);
       applyPosition();
+      announceState(false);
+    };
+
+    const toggleHome = () => {
+      if (unlocked) {
+        returnHome();
+        return;
+      }
+
+      unlocked = true;
+      idleTime = 7;
+      resetIdleAnimation();
+      setSprite(cat, "alert", 0);
+      announceState(true);
     };
 
     const syncHeroVisibility = () => {
@@ -287,14 +311,17 @@ export default function CursorCat() {
     nekoPosY = home.y;
     mousePosX = home.x;
     mousePosY = home.y;
+    unlocked = false;
 
     setSprite(cat, "idle", 0);
     applyPosition();
+    announceState(false);
     observer?.observe(hero as Element);
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
     window.addEventListener("scroll", syncHeroVisibility, { passive: true });
     window.addEventListener("oneko:return-home", returnHome);
+    window.addEventListener("oneko:toggle-home", toggleHome);
     rafId = window.requestAnimationFrame(onAnimationFrame);
 
     return () => {
@@ -304,6 +331,7 @@ export default function CursorCat() {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", syncHeroVisibility);
       window.removeEventListener("oneko:return-home", returnHome);
+      window.removeEventListener("oneko:toggle-home", toggleHome);
     };
   }, []);
 

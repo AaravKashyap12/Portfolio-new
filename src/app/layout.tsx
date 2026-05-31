@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import MouseFollowerCursor from "../components/MouseFollowerCursor";
+import "mouse-follower/dist/mouse-follower.min.css";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -51,6 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body>
+        <MouseFollowerCursor />
         {children}
       </body>
     </html>

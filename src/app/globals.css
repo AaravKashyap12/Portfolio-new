@@ -622,39 +622,79 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background 0.5s var(--ease-expo), color 0.5s var(--ease-expo);
+  cursor: auto;
+}
+
+body.has-mouse-follower,
+body.has-mouse-follower a,
+body.has-mouse-follower button,
+body.has-mouse-follower [role="button"] {
   cursor: none;
 }
 
-.cursor-ring {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--fg2);
-  transform: translate(-50%, -50%);
-  transition: width 0.3s var(--ease-expo), height 0.3s var(--ease-expo), border-color 0.3s, background 0.3s;
+body:not(.has-mouse-follower) a,
+body:not(.has-mouse-follower) button,
+body:not(.has-mouse-follower) [role="button"],
+body:not(.has-mouse-follower) .proj-card,
+body:not(.has-mouse-follower) .pm-diagram-button,
+body:not(.has-mouse-follower) .contact-action {
+  cursor: pointer;
+}
+
+.mf-cursor {
+  z-index: 10000;
+  color: var(--fg);
   mix-blend-mode: difference;
 }
 
-.cursor-dot {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+.mf-cursor::before {
+  background: currentColor;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 18%, transparent);
+}
+
+.mf-cursor.-pointer::before {
+  transform: scale(0.32);
+}
+
+.mf-cursor.-text {
+  mix-blend-mode: normal;
+}
+
+.mf-cursor.-text::before {
+  opacity: 1;
+  transform: scale(1.18);
   background: var(--fg);
-  transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.24),
+    0 0 0 1px color-mix(in srgb, var(--bg) 10%, transparent);
 }
 
-body.hovering .cursor-ring {
-  width: 56px;
-  height: 56px;
-  background: rgba(238, 234, 227, 0.08);
-  border-color: var(--fg);
+.mf-cursor-text {
+  width: 48px;
+  height: 48px;
+  top: -24px;
+  left: -24px;
+  color: var(--bg);
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-theme="light"] .mf-cursor {
+  color: #171512;
+}
+
+[data-theme="light"] .mf-cursor.-text::before {
+  background: #171512;
+  box-shadow:
+    0 14px 30px rgba(18, 18, 16, 0.18),
+    0 0 0 1px rgba(18, 18, 16, 0.1);
+}
+
+[data-theme="light"] .mf-cursor-text {
+  color: #fffdfa;
 }
 
 .cursor-cat {
@@ -1412,6 +1452,16 @@ header {
 .social-icon:focus-visible:not(:hover) {
   outline: 1px solid var(--fg2);
   outline-offset: 4px;
+}
+
+.hero-ctas .call-cta:focus:not(:hover),
+.nav-right .call-cta:focus:not(:hover) {
+  color: var(--call-ink);
+  border-color: var(--call-border);
+  background:
+    linear-gradient(135deg, var(--call-bg), var(--call-bg-2)),
+    var(--call-bg);
+  box-shadow: 0 12px 26px -18px var(--call-shadow);
 }
 
 .social-icon svg {
@@ -3660,10 +3710,6 @@ header {
     cursor: auto;
   }
 
-  .cursor-ring,
-  .cursor-dot {
-    display: none;
-  }
 }
 
 @media (max-width: 767px) {
@@ -4612,6 +4658,31 @@ header {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+body.has-mouse-follower,
+body.has-mouse-follower a,
+body.has-mouse-follower button,
+body.has-mouse-follower [role="button"],
+body.has-mouse-follower .proj-card,
+body.has-mouse-follower .pm-diagram-button,
+body.has-mouse-follower .contact-action {
+  cursor: none !important;
+}
+
+body:not(.has-mouse-follower) a,
+body:not(.has-mouse-follower) button,
+body:not(.has-mouse-follower) [role="button"],
+body:not(.has-mouse-follower) .proj-card,
+body:not(.has-mouse-follower) .pm-diagram-button,
+body:not(.has-mouse-follower) .contact-action {
+  cursor: pointer !important;
+}
+
+body:not(.has-mouse-follower) input,
+body:not(.has-mouse-follower) textarea,
+body:not(.has-mouse-follower) select {
+  cursor: auto !important;
 }
 
 

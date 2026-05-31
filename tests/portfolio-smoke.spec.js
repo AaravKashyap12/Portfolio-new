@@ -26,8 +26,11 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await expect(page.locator('h1')).toHaveAttribute('aria-label', 'Aarav Kashyap Singh');
   await expect(page.locator('body')).toHaveCSS('font-family', /Geist/);
   await expect(page.locator('h1')).toHaveCSS('font-family', /Inter/);
+  await expect(page.getByLabel('Wake Oneko')).toBeVisible();
+  await page.getByLabel('Wake Oneko').click();
   await expect(page.getByLabel('Send Oneko home')).toBeVisible();
   await page.getByLabel('Send Oneko home').click();
+  await expect(page.getByLabel('Wake Oneko')).toBeVisible();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByText('I build AI systems that solve human problems.')).toBeVisible();
   await expect(page.getByText('I think harder about why than how.')).toBeVisible();
@@ -154,14 +157,14 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.evaluate(() => window.scrollTo(0, 0));
 
-  await expect(heroBook).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(heroBook).toHaveCSS('background-color', 'rgb(200, 214, 140)');
   await heroBook.focus();
-  await expect(heroBook).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(heroBook).toHaveCSS('color', /rgb\((13, 13, 10|16, 17, 12)\)/);
   if (page.viewportSize().width > 900) {
     await page.evaluate(() => window.scrollTo(0, 0));
     await heroBook.hover({ force: true });
-    await expect(heroBook).toHaveCSS('background-color', 'rgb(238, 234, 227)');
-    await expect(heroBook).toHaveCSS('color', 'rgb(8, 8, 8)');
+    await expect(heroBook).toHaveCSS('background-color', 'rgb(215, 231, 160)');
+    await expect(heroBook).toHaveCSS('color', 'rgb(13, 13, 10)');
   }
 
   const heroLinks = {

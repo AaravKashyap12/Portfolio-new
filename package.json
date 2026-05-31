@@ -12,6 +12,7 @@
     "@gsap/react": "^2.1.2",
     "framer-motion": "^12.40.0",
     "gsap": "^3.15.0",
+    "mouse-follower": "^1.1.2",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"

@@ -20,6 +20,8 @@
   --f-hero: "Inter", "Geist", sans-serif;
   --f-mono: "Geist Mono", monospace;
   --max: 1300px;
+  --cursor-default: url("/cursors/arrow-light.png") 1 1, auto;
+  --cursor-pointer: url("/cursors/hand-light.png") 6 1, pointer;
 }
 
 [data-theme="light"] {
@@ -33,6 +35,8 @@
   --fg3: #8f897f;
   --accent: #161512;
   --glow: rgba(0, 0, 0, 0.02);
+  --cursor-default: url("/cursors/arrow-dark.png") 1 1, auto;
+  --cursor-pointer: url("/cursors/hand-dark.png") 6 1, pointer;
 }
 
 [data-theme="light"] .nav-brand {
@@ -622,62 +626,53 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background 0.5s var(--ease-expo), color 0.5s var(--ease-expo);
-  cursor: auto;
+  cursor: var(--cursor-default);
 }
 
-body.has-mouse-follower,
+body.has-mouse-follower {
+  cursor: var(--cursor-default);
+}
+
+body a,
+body button,
+body [role="button"],
 body.has-mouse-follower a,
 body.has-mouse-follower button,
-body.has-mouse-follower [role="button"] {
-  cursor: none;
-}
-
-body:not(.has-mouse-follower) a,
-body:not(.has-mouse-follower) button,
-body:not(.has-mouse-follower) [role="button"],
-body:not(.has-mouse-follower) .proj-card,
-body:not(.has-mouse-follower) .pm-diagram-button,
-body:not(.has-mouse-follower) .contact-action {
-  cursor: pointer;
+body.has-mouse-follower [role="button"],
+body .proj-card,
+body .pm-diagram-button,
+body .contact-action {
+  cursor: var(--cursor-pointer);
 }
 
 .mf-cursor {
   z-index: 10000;
   color: var(--fg);
   mix-blend-mode: normal;
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-expo);
 }
 
 .mf-cursor::before {
-  background: color-mix(in srgb, var(--fg) 7%, transparent);
-  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  transform: scale(0.7) !important;
+  background: transparent;
+  border: 1px solid rgba(238, 234, 227, 0.22);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--fg) 5%, transparent),
-    0 12px 26px rgba(0, 0, 0, 0.14);
+    0 0 0 1px rgba(8, 8, 8, 0.18),
+    0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+.mf-cursor.-pointer {
+  opacity: 1;
 }
 
 .mf-cursor.-pointer::before {
-  transform: scale(0.92);
-  background: color-mix(in srgb, var(--fg) 18%, transparent);
-  border-color: color-mix(in srgb, currentColor 42%, transparent);
+  transform: scale(0.82) !important;
+  background: rgba(238, 234, 227, 0.08);
+  border-color: rgba(238, 234, 227, 0.36);
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--fg) 18%, transparent),
-    0 16px 34px rgba(0, 0, 0, 0.2);
-}
-
-.mf-cursor.-pointer::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 13px;
-  height: 13px;
-  background: currentColor;
-  opacity: 0.92;
-  transform: translate(-34%, -30%) rotate(-10deg);
-  transform-origin: center;
-  mask:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 18 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='black' d='M3.2 1.4c-.4-.2-.9.1-.9.6v12.7c0 .6.7.9 1.1.5l2.8-2.7 1.8 3.9c.2.5.8.7 1.3.4l1.7-.8c.5-.2.7-.8.4-1.3l-1.8-3.8h3.8c.6 0 .8-.8.4-1.1L3.2 1.4Z'/%3E%3C/svg%3E")
-    center / contain no-repeat;
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 34px rgba(0, 0, 0, 0.16);
 }
 
 [data-theme="light"] .mf-cursor {
@@ -685,16 +680,16 @@ body:not(.has-mouse-follower) .contact-action {
 }
 
 [data-theme="light"] .mf-cursor::before {
-  background: rgba(23, 21, 18, 0.05);
+  background: transparent;
   border-color: rgba(23, 21, 18, 0.18);
   box-shadow:
     0 0 0 1px rgba(255, 253, 250, 0.72),
-    0 12px 26px rgba(18, 18, 16, 0.1);
+    0 14px 30px rgba(18, 18, 16, 0.1);
 }
 
 [data-theme="light"] .mf-cursor.-pointer::before {
-  background: rgba(23, 21, 18, 0.1);
-  border-color: rgba(23, 21, 18, 0.28);
+  background: rgba(23, 21, 18, 0.055);
+  border-color: rgba(23, 21, 18, 0.24);
 }
 
 .cursor-cat {
@@ -4660,29 +4655,28 @@ header {
   gap: 0.75rem;
 }
 
-body.has-mouse-follower,
+body.has-mouse-follower {
+  cursor: var(--cursor-default) !important;
+}
+
+body a,
+body button,
+body [role="button"],
 body.has-mouse-follower a,
 body.has-mouse-follower button,
 body.has-mouse-follower [role="button"],
+body .proj-card,
 body.has-mouse-follower .proj-card,
+body .pm-diagram-button,
 body.has-mouse-follower .pm-diagram-button,
-body.has-mouse-follower .contact-action {
-  cursor: none !important;
+body .contact-action {
+  cursor: var(--cursor-pointer) !important;
 }
 
-body:not(.has-mouse-follower) a,
-body:not(.has-mouse-follower) button,
-body:not(.has-mouse-follower) [role="button"],
-body:not(.has-mouse-follower) .proj-card,
-body:not(.has-mouse-follower) .pm-diagram-button,
-body:not(.has-mouse-follower) .contact-action {
-  cursor: pointer !important;
-}
-
-body:not(.has-mouse-follower) input,
-body:not(.has-mouse-follower) textarea,
-body:not(.has-mouse-follower) select {
-  cursor: auto !important;
+body input,
+body textarea,
+body select {
+  cursor: text !important;
 }
 
 

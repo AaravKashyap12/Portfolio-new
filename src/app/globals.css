@@ -644,16 +644,17 @@ body:not(.has-mouse-follower) .contact-action {
 .mf-cursor {
   z-index: 10000;
   color: var(--fg);
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
 }
 
 .mf-cursor::before {
-  background: currentColor;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 18%, transparent);
+  background: transparent;
+  border: 1px solid currentColor;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 7%, transparent);
 }
 
 .mf-cursor.-pointer::before {
-  transform: scale(0.32);
+  transform: scale(0.74);
 }
 
 .mf-cursor.-text {
@@ -662,11 +663,10 @@ body:not(.has-mouse-follower) .contact-action {
 
 .mf-cursor.-text::before {
   opacity: 1;
-  transform: scale(1.18);
-  background: var(--fg);
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.24),
-    0 0 0 1px color-mix(in srgb, var(--bg) 10%, transparent);
+  transform: scale(1.06);
+  background: transparent;
+  border-color: color-mix(in srgb, currentColor 76%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bg) 10%, transparent);
 }
 
 .mf-cursor-text {
@@ -674,7 +674,7 @@ body:not(.has-mouse-follower) .contact-action {
   height: 48px;
   top: -24px;
   left: -24px;
-  color: var(--bg);
+  color: var(--fg);
   font-family: var(--f-mono);
   font-size: 0.58rem;
   font-weight: 700;
@@ -687,14 +687,13 @@ body:not(.has-mouse-follower) .contact-action {
 }
 
 [data-theme="light"] .mf-cursor.-text::before {
-  background: #171512;
-  box-shadow:
-    0 14px 30px rgba(18, 18, 16, 0.18),
-    0 0 0 1px rgba(18, 18, 16, 0.1);
+  background: transparent;
+  border-color: rgba(23, 21, 18, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 253, 250, 0.6);
 }
 
 [data-theme="light"] .mf-cursor-text {
-  color: #fffdfa;
+  color: #171512;
 }
 
 .cursor-cat {

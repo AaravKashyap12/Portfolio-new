@@ -854,11 +854,10 @@ export default function Portfolio() {
       <header>
         <div className="nav-wrap">
           <div className="nav-brand-row">
-            <a href="#hero" className="nav-brand" data-cursor-text="Home">Aarav Kashyap Singh</a>
+            <a href="#hero" className="nav-brand">Aarav Kashyap Singh</a>
             <button
               className={`oneko-home ${onekoAwake ? "is-awake" : ""} ${onekoPing ? "is-pinging" : ""}`}
               data-oneko-home
-              data-cursor-text={onekoAwake ? "Home" : "Wake"}
               type="button"
               aria-pressed={onekoAwake}
               aria-label={onekoAwake ? "Send Oneko home" : "Wake Oneko"}
@@ -874,19 +873,18 @@ export default function Portfolio() {
             </button>
           </div>
           <ul className="nav-links">
-            <li><a href="#about" data-cursor-text="Go">Experience</a></li>
-            <li><a href="#projects" data-cursor-text="Go">Work</a></li>
-            <li><a href="#skills" data-cursor-text="Go">Skills</a></li>
-            <li><a href="#contact" data-cursor-text="Go">Contact</a></li>
+            <li><a href="#about">Experience</a></li>
+            <li><a href="#projects">Work</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
           <div className="nav-right">
-            <button className="theme-toggle" id="themeBtn" aria-label="Toggle theme" data-cursor-text="Theme">☀</button>
+            <button className="theme-toggle" id="themeBtn" aria-label="Toggle theme">☀</button>
             <a
               className="nav-cta call-cta"
               href="https://cal.com/aaravkashyap/meetings"
               target="_blank"
               rel="noopener noreferrer"
-              data-cursor-text="Call"
             >
               Book Call ↗
             </a>
@@ -900,7 +898,7 @@ export default function Portfolio() {
 
         <div className="hero-tweet-wrap">
           <div className="hero-tweet-label">LATEST THINKING</div>
-          <a href="https://x.com/byaarav/status/2057191317420274070" target="_blank" rel="noopener noreferrer" className="custom-tweet" data-cursor-text="Read">
+          <a href="https://x.com/byaarav/status/2057191317420274070" target="_blank" rel="noopener noreferrer" className="custom-tweet">
             <div className="ct-arrow">↗</div>
             <div className="ct-header">
               <img src="https://unavatar.io/twitter/byaarav" alt="Aarav Kashyap" className="ct-avatar" />
@@ -959,7 +957,6 @@ export default function Portfolio() {
               href="https://cal.com/aaravkashyap/meetings"
               target="_blank"
               rel="noopener noreferrer"
-              data-cursor-text="Call"
             >
               Book a Call
             </a>
@@ -970,7 +967,6 @@ export default function Portfolio() {
               rel="noopener noreferrer"
               aria-label="Resume"
               title="Resume"
-              data-cursor-text="Resume"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
@@ -984,7 +980,6 @@ export default function Portfolio() {
                 rel={opensNewTab(social.href) ? "noopener noreferrer" : undefined}
                 aria-label={social.label}
                 title={social.label}
-                data-cursor-text={social.label === "Twitter" ? "X" : social.label}
                 key={social.label}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -1007,7 +1002,6 @@ export default function Portfolio() {
                 className="hstat"
                 key={signal.label}
                 aria-label={`${signal.label}. ${signal.description}`}
-                data-cursor-text="Info"
               >
                 <span className={`hstat-pip ${signal.tone}`.trim()} />
                 <span className="hstat-txt">{signal.label}</span>
@@ -1059,14 +1053,13 @@ export default function Portfolio() {
                 <span>Useful AI</span>
               </div>
             </div>
-            <a className="link-arrow projects-link" href="#contact" data-cursor-text="Build">Build with me -&gt;</a>
+            <a className="link-arrow projects-link" href="#contact">Build with me -&gt;</a>
           </div>
           <div className="proj-grid r d1">
             {projects.map((project) => (
               <div
                 className={`proj-card proj-card-${project.layout} ${project.style === "in-progress" ? "proj-in-progress" : ""}`}
                 key={project.title}
-                data-cursor-text={project.style === "in-progress" ? "Soon" : "View"}
                 onClick={() => {
                   if (project.style === "in-progress") return;
                   setExpandedArchitecture(false);
@@ -1146,7 +1139,6 @@ export default function Portfolio() {
                   setActiveProject(null);
                 }}
                 aria-label="Close project dossier"
-                data-cursor-text="Close"
               >
                 x
               </button>
@@ -1208,12 +1200,12 @@ export default function Portfolio() {
                 <div className="pm-right">
                   <div className="pm-action-row">
                     {activeProject.githubUrl ? (
-                      <a href={activeProject.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-outline" data-cursor-text="Go">{activeProject.githubText}</a>
+                      <a href={activeProject.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-outline">{activeProject.githubText}</a>
                     ) : (
                       <span className="btn-outline disabled">{activeProject.githubText || "Private Repo"}</span>
                     )}
                     {activeProject.demoUrl && (
-                      <a href={activeProject.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-outline" data-cursor-text="Live">{activeProject.demoText}</a>
+                      <a href={activeProject.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-outline">{activeProject.demoText}</a>
                     )}
                   </div>
                   {activeProject.architectureSrc ? (
@@ -1223,7 +1215,6 @@ export default function Portfolio() {
                         className="pm-diagram-button"
                         onClick={() => setExpandedArchitecture(true)}
                         aria-label={`View full ${activeProject.title} architecture`}
-                        data-cursor-text="Open"
                       >
                         <div className="pm-diagram">
                           <Image
@@ -1281,7 +1272,6 @@ export default function Portfolio() {
                   className="architecture-lightbox-close"
                   onClick={() => setExpandedArchitecture(false)}
                   aria-label="Close architecture viewer"
-                  data-cursor-text="Close"
                 >
                   ×
                 </button>
@@ -1485,7 +1475,6 @@ export default function Portfolio() {
                   target={action.external ? "_blank" : undefined}
                   rel={action.external ? "noopener noreferrer" : undefined}
                   className={`contact-action contact-action-${action.tone}`}
-                  data-cursor-text={action.external ? "Go" : "Open"}
                 >
                   <span className="contact-action-kicker">{action.kicker}</span>
                   <span className="contact-action-main">
@@ -1523,7 +1512,6 @@ export default function Portfolio() {
                 href={link.href}
                 target={opensNewTab(link.href) ? "_blank" : undefined}
                 rel={opensNewTab(link.href) ? "noopener noreferrer" : undefined}
-                data-cursor-text={opensNewTab(link.href) ? "Go" : "Open"}
               >
                 {link.label}
               </a>

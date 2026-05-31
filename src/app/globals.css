@@ -648,52 +648,53 @@ body:not(.has-mouse-follower) .contact-action {
 }
 
 .mf-cursor::before {
-  background: transparent;
-  border: 1px solid currentColor;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 7%, transparent);
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--fg) 5%, transparent),
+    0 12px 26px rgba(0, 0, 0, 0.14);
 }
 
 .mf-cursor.-pointer::before {
-  transform: scale(0.74);
+  transform: scale(0.92);
+  background: color-mix(in srgb, var(--fg) 18%, transparent);
+  border-color: color-mix(in srgb, currentColor 42%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--fg) 18%, transparent),
+    0 16px 34px rgba(0, 0, 0, 0.2);
 }
 
-.mf-cursor.-text {
-  mix-blend-mode: normal;
-}
-
-.mf-cursor.-text::before {
-  opacity: 1;
-  transform: scale(1.06);
-  background: transparent;
-  border-color: color-mix(in srgb, currentColor 76%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bg) 10%, transparent);
-}
-
-.mf-cursor-text {
-  width: 48px;
-  height: 48px;
-  top: -24px;
-  left: -24px;
-  color: var(--fg);
-  font-family: var(--f-mono);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.mf-cursor.-pointer::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  background: currentColor;
+  opacity: 0.92;
+  transform: translate(-34%, -30%) rotate(-10deg);
+  transform-origin: center;
+  mask:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 18 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='black' d='M3.2 1.4c-.4-.2-.9.1-.9.6v12.7c0 .6.7.9 1.1.5l2.8-2.7 1.8 3.9c.2.5.8.7 1.3.4l1.7-.8c.5-.2.7-.8.4-1.3l-1.8-3.8h3.8c.6 0 .8-.8.4-1.1L3.2 1.4Z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 
 [data-theme="light"] .mf-cursor {
   color: #171512;
 }
 
-[data-theme="light"] .mf-cursor.-text::before {
-  background: transparent;
-  border-color: rgba(23, 21, 18, 0.55);
-  box-shadow: 0 0 0 1px rgba(255, 253, 250, 0.6);
+[data-theme="light"] .mf-cursor::before {
+  background: rgba(23, 21, 18, 0.05);
+  border-color: rgba(23, 21, 18, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 253, 250, 0.72),
+    0 12px 26px rgba(18, 18, 16, 0.1);
 }
 
-[data-theme="light"] .mf-cursor-text {
-  color: #171512;
+[data-theme="light"] .mf-cursor.-pointer::before {
+  background: rgba(23, 21, 18, 0.1);
+  border-color: rgba(23, 21, 18, 0.28);
 }
 
 .cursor-cat {

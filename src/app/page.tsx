@@ -901,7 +901,14 @@ export default function Portfolio() {
           <a href="https://x.com/byaarav/status/2057191317420274070" target="_blank" rel="noopener noreferrer" className="custom-tweet">
             <div className="ct-arrow">↗</div>
             <div className="ct-header">
-              <img src="https://unavatar.io/twitter/byaarav" alt="Aarav Kashyap" className="ct-avatar" />
+              <Image
+                src="https://unavatar.io/twitter/byaarav"
+                alt="Aarav Kashyap"
+                width={44}
+                height={44}
+                unoptimized
+                className="ct-avatar"
+              />
               <div className="ct-user">
                 <div className="ct-name-row">
                   <span className="ct-name">Aarav Kashyap</span>

@@ -1,4 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Resume",
+  description:
+    "Resume page for Aarav Kashyap Singh, also known as Aarav Kashyap, an AI Engineer and Full Stack Developer from India.",
+  alternates: {
+    canonical: "https://www.aaravkashyap.live/resume",
+  },
+};
 
 export default function ResumePage() {
   return (

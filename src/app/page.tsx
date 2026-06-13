@@ -1027,7 +1027,7 @@ export default function Portfolio() {
             <div className="about-body r">
               <div className="section-label">Process Signals</div>
               <h2 className="section-title">Thoughtful<br />engineer.</h2>
-              <p>I&apos;m Aarav, a 21 year old AI engineer from India.</p>
+              <p>I&apos;m Aarav Kashyap Singh, also known as Aarav Kashyap and byaarav, a 21 year old AI engineer from India.</p>
               <p>I don&apos;t build things to add them to a resume. I build them because something bothered me: a problem felt unsolved, a system felt broken, a better way felt obvious.</p>
               <p>Right now I&apos;m finishing my undergrad and shipping production-grade AI systems. Not demos. Not tutorials. Things that actually run.</p>
             </div>

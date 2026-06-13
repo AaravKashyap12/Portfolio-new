@@ -4,9 +4,9 @@ import "mouse-follower/dist/mouse-follower.min.css";
 import "./globals.css";
 
 const siteUrl = "https://www.aaravkashyap.live";
-const siteTitle = "Aarav Kashyap Singh - AI Engineer & Full Stack Developer";
+const siteTitle = "Aarav Kashyap Singh | Aarav Kashyap - AI Engineer";
 const siteDescription =
-  "Personal portfolio of Aarav Kashyap Singh, an AI Engineer and Full Stack Developer building intelligent products, agentic RAG systems, backend workflows, and automation tools.";
+  "Official portfolio of Aarav Kashyap Singh, also known as Aarav Kashyap and byaarav. Aarav is an AI Engineer and Full Stack Developer building agentic RAG systems, backend workflows, and useful automation tools.";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -14,9 +14,16 @@ const structuredData = {
     {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
-      name: "Aarav Kashyap Singh Portfolio",
+      name: "Aarav Kashyap Singh",
+      alternateName: [
+        "Aarav Kashyap",
+        "Aarav Kashyap Portfolio",
+        "byaarav",
+        "aaravkashyap.live",
+      ],
       url: siteUrl,
       description: siteDescription,
+      inLanguage: "en",
       publisher: {
         "@id": `${siteUrl}/#person`,
       },
@@ -27,6 +34,7 @@ const structuredData = {
       url: siteUrl,
       name: siteTitle,
       description: siteDescription,
+      inLanguage: "en",
       mainEntity: {
         "@id": `${siteUrl}/#person`,
       },
@@ -38,16 +46,37 @@ const structuredData = {
       "@type": "Person",
       "@id": `${siteUrl}/#person`,
       name: "Aarav Kashyap Singh",
+      alternateName: [
+        "Aarav Kashyap",
+        "Aarav",
+        "byaarav",
+        "Aarav K Singh",
+      ],
+      givenName: "Aarav",
+      familyName: "Singh",
+      additionalName: "Kashyap",
       url: siteUrl,
       image: `${siteUrl}/og-image.svg`,
       jobTitle: "AI Engineer and Full Stack Developer",
+      description:
+        "Aarav Kashyap Singh, also known as Aarav Kashyap and byaarav, is an AI Engineer and Full Stack Developer from India.",
       email: "mailto:aaravkashyap1203@gmail.com",
       sameAs: [
         "https://github.com/AaravKashyap12",
         "https://www.linkedin.com/in/aarav-singh-3a6351289",
         "https://x.com/byaarav",
+        "https://cal.com/aaravkashyap/meetings",
       ],
+      mainEntityOfPage: {
+        "@id": `${siteUrl}/#profile`,
+      },
+      homeLocation: {
+        "@type": "Country",
+        name: "India",
+      },
       knowsAbout: [
+        "Aarav Kashyap",
+        "Aarav Kashyap Singh",
         "AI engineering",
         "Full stack development",
         "Agentic RAG systems",
@@ -73,13 +102,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: siteTitle,
+  title: {
+    default: siteTitle,
+    template: "%s | Aarav Kashyap Singh",
+  },
   description: siteDescription,
-  applicationName: "Aarav Kashyap Singh Portfolio",
+  applicationName: "Aarav Kashyap Singh",
+  category: "portfolio",
+  classification: "AI Engineer Portfolio",
+  referrer: "origin-when-cross-origin",
   keywords: [
     "Aarav Kashyap Singh",
+    "Aarav Kashyap",
+    "Aarav",
+    "byaarav",
+    "Aarav Kashyap portfolio",
+    "Aarav Kashyap Singh portfolio",
+    "aaravkashyap.live",
     "AI Engineer",
     "Full Stack Developer",
+    "AI Engineer India",
     "Agentic RAG",
     "LangChain",
     "LangGraph",
@@ -87,12 +129,27 @@ export const metadata: Metadata = {
     "Next.js",
     "AI portfolio",
   ],
-  robots: "index, follow",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   authors: [{ name: "Aarav Kashyap Singh", url: siteUrl }],
   creator: "Aarav Kashyap Singh",
   publisher: "Aarav Kashyap Singh",
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
+  },
+  other: {
+    "profile:first_name": "Aarav",
+    "profile:last_name": "Kashyap Singh",
+    "profile:username": "byaarav",
   },
   openGraph: {
     title: siteTitle,

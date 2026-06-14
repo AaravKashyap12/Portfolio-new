@@ -2,7 +2,7 @@
 
 A production-minded portfolio built to feel less like a resume and more like a small product. It highlights real AI and full-stack work through a dark/light visual system, interactive project case studies, architecture previews, live traffic signals, and a tiny Oneko companion in the hero.
 
-Live site: [aaravkashyap.live](https://aaravkashyap.live)
+Live site: [aaravkashyap.live](https://www.aaravkashyap.live/)
 
 ## What Is Inside
 

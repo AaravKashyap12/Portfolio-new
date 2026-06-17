@@ -6,7 +6,7 @@ import "./globals.css";
 const siteUrl = "https://www.aaravkashyap.live";
 const siteTitle = "Aarav Kashyap Singh | Aarav Kashyap - AI Engineer";
 const siteDescription =
-  "Aarav Kashyap Singh (byaarav) - AI Engineer & Full Stack Developer building agentic RAG systems, backend workflows, and automation tools.";
+  "Aarav Kashyap Singh (byaarav) - AI Engineer building agentic RAG systems, backend workflows, and automation tools.";
 
 const structuredData = {
   "@context": "https://schema.org",

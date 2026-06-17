@@ -63,7 +63,7 @@ const structuredData = {
       email: "mailto:aaravkashyap1203@gmail.com",
       sameAs: [
         "https://github.com/AaravKashyap12",
-        "https://www.linkedin.com/in/aarav-singh-3a6351289",
+        "https://www.linkedin.com/in/aaravkashyapsingh",
         "https://x.com/byaarav",
         "https://cal.com/aaravkashyap/meetings",
       ],

@@ -54,26 +54,16 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   await expect(page.locator('.proj-title', { hasText: 'ClearFlow' })).toBeVisible();
   await expect(page.locator('.proj-title', { hasText: 'CryptoQuant' })).toBeVisible();
   await expect(page.locator('.proj-title', { hasText: 'TalentMatch' })).toBeVisible();
+  await expect(page.locator('.proj-card')).toHaveCount(3);
+  await expect(page.getByText('Open dossier')).toHaveCount(0);
+  await expect(page.locator('.proj-actions').first()).toContainText('Private');
+  await expect(page.locator('.proj-actions').nth(1)).toContainText('GitHub');
+  await expect(page.locator('.proj-actions').nth(1)).toContainText('Live Demo');
 
   await page.locator('.proj-card').first().click({ force: true });
-  await expect(page.locator('.pm-title')).toHaveText('ClearFlow');
-  await expect(page.locator('.pm-diagram img')).toBeVisible();
-  await expect(page.locator('.pm-diagram img')).toHaveAttribute('src', /clearflow-architecture\.png/);
-  await expect(page.getByRole('button', { name: 'View full ClearFlow architecture' })).toBeVisible();
-  await page.getByRole('button', { name: 'View full ClearFlow architecture' }).click();
-  await expect(page.locator('.architecture-lightbox img')).toBeVisible();
-  await expect(page.locator('.architecture-lightbox-head h4')).toHaveText('ClearFlow');
-  const lightboxFrameBounds = await page.locator('.architecture-lightbox-frame').evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    return {
-      bottom: Math.round(rect.bottom),
-      right: Math.round(rect.right),
-    };
-  });
-  expect(lightboxFrameBounds.bottom).toBeLessThanOrEqual(page.viewportSize().height);
-  expect(lightboxFrameBounds.right).toBeLessThanOrEqual(page.viewportSize().width);
-  await page.getByRole('button', { name: 'Close architecture viewer' }).click();
-  await page.locator('.proj-modal-close').click();
+  await expect(page.locator('.proj-modal-overlay')).toHaveCount(0);
+  await expect(page.locator('.architecture-lightbox-overlay')).toHaveCount(0);
+  await expect(page.locator('.proj-card').first()).not.toHaveAttribute('role', 'button');
 
   await expect(page.locator('#about .fact').first().locator('.fact-n')).toHaveText('4+');
   await expect(page.locator('#about .fact').first().locator('.fact-n')).toHaveCSS('font-family', /Geist Mono/);
@@ -83,7 +73,7 @@ test('hero navigation links and interactive controls work', async ({ page, conte
 
   const aboutCopy = await page.locator('#about .about-body').innerText();
   expect(aboutCopy).not.toContain('—');
-  expect(aboutCopy).toContain("I'm Aarav, a 21 year old AI engineer from India.");
+  expect(aboutCopy).toContain("I'm Aarav Kashyap Singh, a 21 year old AI engineer from India building production-grade AI systems across product, backend, and automation.");
 
   const internalLinks = await page.locator('a[href^="#"]').evaluateAll((links) =>
     links.map((link) => link.getAttribute('href'))
@@ -170,7 +160,7 @@ test('hero navigation links and interactive controls work', async ({ page, conte
   const heroLinks = {
     Resume: 'https://docs.google.com/document/d/1R5pZ2Qn8mP4_xdHolHgX2RIQP4B6ovrvKUYdlvndoOU/edit?usp=sharing',
     GitHub: 'https://github.com/AaravKashyap12',
-    LinkedIn: 'https://linkedin.com/in/aarav-singh-3a6351289',
+    LinkedIn: 'https://linkedin.com/in/aaravkashyapsingh',
     Twitter: 'https://x.com/byaarav',
   };
 
@@ -251,49 +241,8 @@ test('hero navigation links and interactive controls work', async ({ page, conte
 
   await page.goto('/#projects');
   await page.locator('.proj-card').first().click({ force: true });
-  await expect(page.locator('.pm-title')).toHaveText('ClearFlow');
-  await page.waitForTimeout(900);
-  const mobileModalBounds = await page.locator('.proj-modal').evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    return {
-      viewportWidth: window.innerWidth,
-      viewportHeight: window.innerHeight,
-      left: Math.round(rect.left),
-      right: Math.round(rect.right),
-      top: Math.round(rect.top),
-      bottom: Math.round(rect.bottom),
-    };
-  });
-  expect(mobileModalBounds.left).toBeGreaterThanOrEqual(0);
-  expect(mobileModalBounds.right).toBeLessThanOrEqual(mobileModalBounds.viewportWidth);
-  expect(mobileModalBounds.top).toBeGreaterThanOrEqual(0);
-  expect(mobileModalBounds.bottom).toBeLessThanOrEqual(mobileModalBounds.viewportHeight);
-
-  const mobileModalLayout = await page.locator('.pm-body').evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    return {
-      viewportWidth: window.innerWidth,
-      columns: getComputedStyle(element).gridTemplateColumns,
-      right: Math.round(rect.right),
-      width: Math.round(rect.width),
-    };
-  });
-  expect(mobileModalLayout.columns).not.toContain('0px');
-  expect(mobileModalLayout.right).toBeLessThanOrEqual(mobileModalLayout.viewportWidth);
-  expect(mobileModalLayout.width).toBeGreaterThan(300);
-
-  const mobileDiagramBounds = await page.locator('.pm-diagram').evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    return {
-      viewportWidth: window.innerWidth,
-      left: Math.round(rect.left),
-      right: Math.round(rect.right),
-      width: Math.round(rect.width),
-    };
-  });
-  expect(mobileDiagramBounds.left).toBeGreaterThanOrEqual(0);
-  expect(mobileDiagramBounds.right).toBeLessThanOrEqual(mobileDiagramBounds.viewportWidth);
-  expect(mobileDiagramBounds.width).toBeLessThanOrEqual(mobileDiagramBounds.viewportWidth);
+  await expect(page.locator('.proj-modal-overlay')).toHaveCount(0);
+  await expect(page.locator('.architecture-lightbox-overlay')).toHaveCount(0);
 
   expect(errors).toEqual([]);
 });

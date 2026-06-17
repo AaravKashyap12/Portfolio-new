@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { motion, AnimatePresence } from "framer-motion";
 import CursorCat from "../components/CursorCat";
 import GitHubGraph from "../components/GitHubGraph";
 
@@ -29,15 +29,17 @@ const facts = [
   ["21", "Age", "Still early, already shipping"],
 ];
 
+const factIcons = ["cube", "code", "rocket", "user"];
+
 const projects = [
   {
     num: "01",
     category: "AI / Production",
-    tagline: "01 / AI / Fullstack",
+    tagline: "01 / AI / Fintech",
     title: "ClearFlow",
-    description: "A bank statement intelligence system that turns messy PDFs and scans into categorized, validated Excel output for real finance operations.",
+    description: "AI platform that converts bank statements into audit-ready summaries for lending teams.",
     why: "Manual statement reviews were slow and error-prone. A real SME finance company needed something faster and auditable.",
-    tags: ["FastAPI", "Gemini Vision", "Claude Haiku", "PyMuPDF", "React", "Supabase"],
+    tags: ["AI", "Python", "FastAPI", "PDF Parsing"],
     cardStatus: "Internal live",
     status: "Live / deployed for Phoenix Commercial Finance",
     githubText: "Private Repo",
@@ -45,47 +47,24 @@ const projects = [
     demoText: "Live (Internal)",
     demoUrl: null,
     impact: "Replaced hours of manual review with a single upload",
+    cardImageSrc: "/project-cards/clearflow-card-v3.png",
     architectureSrc: "/architectures/clearflow-architecture.png",
     summary: "Document ingestion, extraction, validation, and export layered into one dependable internal workflow.",
     role: "Owned product shape, backend pipeline, extraction logic, and the internal frontend surface.",
     facts: [["Role", "End-to-end build"], ["Client", "UK finance"], ["Surface", "Internal ops tool"]],
     workflow: ["Upload", "Extract", "Normalize", "Validate", "Export"],
-    cardMetrics: ["Finance ops", "OCR + LLM", "Audit-ready"],
+    cardMetrics: ["Vision-first", "Audit checks", "Finance ops"],
     layout: "featured",
     style: "normal"
   },
   {
     num: "02",
-    category: "ML / Finance",
-    tagline: "02 / ML / Finance",
-    title: "CryptoQuant",
-    description: "A live crypto forecasting workspace combining streaming market data, sequence models, and visual backtesting in one product surface.",
-    why: "Everyone learns ML on dead CSV files. I wanted to see how forecasting actually works in production with live data.",
-    tags: ["TensorFlow", "FastAPI", "React", "Supabase", "CCXT", "Framer Motion"],
-    cardStatus: "Public live",
-    status: "Live / cryptoquant.vercel.app",
-    githubText: "GitHub ->",
-    githubUrl: "https://github.com/AaravKashyap12/CryptoQuant",
-    demoText: "Live Demo ->",
-    demoUrl: "https://cryptoquant.vercel.app",
-    impact: "Hybrid LSTM + 1D-CNN with sentiment-aware Fear and Greed Index integration",
-    architectureSrc: "/architectures/cryptoquant-architecture.png",
-    summary: "Market streams, forecasting models, confidence intervals, and clean charting tied into a single analysis loop.",
-    role: "Built the prediction pipeline, data flow, and dashboard layer from scratch.",
-    facts: [["Model", "LSTM + 1D-CNN"], ["Data", "Live websockets"], ["Mode", "Forecast + backtest"]],
-    workflow: ["Stream", "Forecast", "Score", "Compare"],
-    cardMetrics: ["Realtime", "Sequence model", "Backtesting"],
-    layout: "compact",
-    style: "normal"
-  },
-  {
-    num: "03",
     category: "NLP / SaaS",
-    tagline: "03 / NLP / SaaS",
+    tagline: "02 / AI / HR Tech",
     title: "TalentMatch",
-    description: "A resume screening platform that scores candidates semantically instead of relying on brittle keyword filters.",
+    description: "AI recruiting copilot that ranks candidates and delivers evidence-backed hiring recommendations.",
     why: "Someone qualified did not get shortlisted because their resume lacked the right keywords. Resume screening is broken.",
-    tags: ["FastAPI", "spaCy", "ONNX Runtime", "Sentence-Transformers", "React", "PostgreSQL"],
+    tags: ["NLP", "Python", "FastAPI", "PostgreSQL"],
     cardStatus: "Public live",
     status: "Live / talentmatch-v1.vercel.app",
     githubText: "GitHub ->",
@@ -93,38 +72,40 @@ const projects = [
     demoText: "Live Demo ->",
     demoUrl: "https://talentmatch-v1.vercel.app",
     impact: "90%+ test coverage with a production-ready ML pipeline",
+    cardImageSrc: "/project-cards/talentmatch-card-v3.png",
     architectureSrc: "/architectures/talentmatch-architecture.png",
     summary: "Resume parsing, semantic scoring, and recruiter-facing analysis views built for better hiring decisions.",
     role: "Designed the ranking logic, evaluation flow, and hiring-facing interface.",
     facts: [["Focus", "Semantic ranking"], ["Pipeline", "NLP + embeddings"], ["Testing", "90%+ coverage"]],
     workflow: ["Parse", "Embed", "Score", "Compare"],
-    cardMetrics: ["Hiring", "Semantic match", "Explainable"],
+    cardMetrics: ["Semantic ranking", "Explainable AI", "Hiring ops"],
     layout: "compact",
     style: "normal"
   },
   {
-    num: "04",
-    category: "AI / TBD",
-    tagline: "04 / In Progress",
-    title: "[Redacted]",
-    description: "A more ambitious system is underway. Not ready to show yet, but the direction is bigger, sharper, and more product-heavy.",
-    why: "",
-    tags: ["hidden"],
-    cardStatus: "Building",
-    status: "Building",
-    githubText: null,
-    githubUrl: null,
-    demoText: null,
-    demoUrl: null,
-    impact: "",
-    architectureSrc: null,
-    summary: "The next build is intentionally quiet for now.",
-    role: "Still shaping the architecture and surface.",
-    facts: [["State", "Private"], ["Stage", "Research + build"], ["Reveal", "Soon"]],
-    workflow: ["Research", "Model", "Build", "Ship"],
-    cardMetrics: ["Private", "In progress", "Soon"],
-    layout: "tease",
-    style: "in-progress"
+    num: "03",
+    category: "ML / Finance",
+    tagline: "03 / ML / Finance",
+    title: "CryptoQuant",
+    description: "Real-time crypto analytics dashboard with forecasts, signals, and backtested strategies.",
+    why: "Everyone learns ML on dead CSV files. I wanted to see how forecasting actually works in production with live data.",
+    tags: ["Python", "TensorFlow.js", "Binance API", "Dashboard"],
+    cardStatus: "Public live",
+    status: "Live / cryptoquant.vercel.app",
+    githubText: "GitHub ->",
+    githubUrl: "https://github.com/AaravKashyap12/CryptoQuant",
+    demoText: "Live Demo ->",
+    demoUrl: "https://cryptoquant.vercel.app",
+    impact: "Hybrid LSTM + 1D-CNN with sentiment-aware Fear and Greed Index integration",
+    cardImageSrc: "/project-cards/cryptoquant-card-v3.png",
+    architectureSrc: "/architectures/cryptoquant-architecture.png",
+    summary: "Market streams, forecasting models, confidence intervals, and clean charting tied into a single analysis loop.",
+    role: "Built the prediction pipeline, data flow, and dashboard layer from scratch.",
+    facts: [["Model", "LSTM + 1D-CNN"], ["Data", "Live websockets"], ["Mode", "Forecast + backtest"]],
+    workflow: ["Stream", "Forecast", "Score", "Compare"],
+    cardMetrics: ["Live price", "Forecasts", "Backtests"],
+    layout: "compact",
+    style: "normal"
   }
 ];
 const expertiseBands = [
@@ -171,8 +152,7 @@ const expertiseBands = [
       { name: "SQLAlchemy", icon: "sqlalchemy" },
       { name: "SQLite", icon: "sqlite" },
       { name: "AWS", icon: "data:image/svg+xml,%3Csvg viewBox='0 0 640 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M180.41 203.01c-.72 22.65 10.6 32.68 10.88 39.05a8.164 8.164 0 0 1-4.1 6.27l-12.8 8.96a10.66 10.66 0 0 1-5.63 1.92c-.43-.02-8.19 1.83-20.48-25.61a78.608 78.608 0 0 1-62.61 29.45c-16.28.89-60.4-9.24-58.13-56.21-1.59-38.28 34.06-62.06 70.93-60.05 7.1.02 21.6.37 46.99 6.27v-15.62c2.69-26.46-14.7-46.99-44.81-43.91-2.4.01-19.4-.5-45.84 10.11-7.36 3.38-8.3 2.82-10.75 2.82-7.41 0-4.36-21.48-2.94-24.2 5.21-6.4 35.86-18.35 65.94-18.18a76.857 76.857 0 0 1 55.69 17.28 70.285 70.285 0 0 1 17.67 52.36l-.01 69.29zM93.99 235.4c32.43-.47 46.16-19.97 49.29-30.47 2.46-10.05 2.05-16.41 2.05-27.4-9.67-2.32-23.59-4.85-39.56-4.87-15.15-1.14-42.82 5.63-41.74 32.26-1.24 16.79 11.12 31.4 29.96 30.48zm170.92 23.05c-7.86.72-11.52-4.86-12.68-10.37l-49.8-164.65c-.97-2.78-1.61-5.65-1.92-8.58a4.61 4.61 0 0 1 3.86-5.25c.24-.04-2.13 0 22.25 0 8.78-.88 11.64 6.03 12.55 10.37l35.72 140.83 33.16-140.83c.53-3.22 2.94-11.07 12.8-10.24h17.16c2.17-.18 11.11-.5 12.68 10.37l33.42 142.63L420.98 80.1c.48-2.18 2.72-11.37 12.68-10.37h19.72c.85-.13 6.15-.81 5.25 8.58-.43 1.85 3.41-10.66-52.75 169.9-1.15 5.51-4.82 11.09-12.68 10.37h-18.69c-10.94 1.15-12.51-9.66-12.68-10.75L328.67 110.7l-32.78 136.99c-.16 1.09-1.73 11.9-12.68 10.75h-18.3zm273.48 5.63c-5.88.01-33.92-.3-57.36-12.29a12.802 12.802 0 0 1-7.81-11.91v-10.75c0-8.45 6.2-6.9 8.83-5.89 10.04 4.06 16.48 7.14 28.81 9.6 36.65 7.53 52.77-2.3 56.72-4.48 13.15-7.81 14.19-25.68 5.25-34.95-10.48-8.79-15.48-9.12-53.13-21-4.64-1.29-43.7-13.61-43.79-52.36-.61-28.24 25.05-56.18 69.52-55.95 12.67-.01 46.43 4.13 55.57 15.62 1.35 2.09 2.02 4.55 1.92 7.04v10.11c0 4.44-1.62 6.66-4.87 6.66-7.71-.86-21.39-11.17-49.16-10.75-6.89-.36-39.89.91-38.41 24.97-.43 18.96 26.61 26.07 29.7 26.89 36.46 10.97 48.65 12.79 63.12 29.58 17.14 22.25 7.9 48.3 4.35 55.44-19.08 37.49-68.42 34.44-69.26 34.42zm40.2 104.86c-70.03 51.72-171.69 79.25-258.49 79.25A469.127 469.127 0 0 1 2.83 327.46c-6.53-5.89-.77-13.96 7.17-9.47a637.37 637.37 0 0 0 316.88 84.12 630.22 630.22 0 0 0 241.59-49.55c11.78-5 21.77 7.8 10.12 16.38zm29.19-33.29c-8.96-11.52-59.28-5.38-81.81-2.69-6.79.77-7.94-5.12-1.79-9.47 40.07-28.17 105.88-20.1 113.44-10.63 7.55 9.47-2.05 75.41-39.56 106.91-5.76 4.87-11.27 2.3-8.71-4.1 8.44-21.25 27.39-68.49 18.43-80.02z' fill='white'/%3E%3C/svg%3E" },
-      { name: "Vercel", icon: "vercel" },
-      { name: "Render", icon: "render" }
+      { name: "Vercel", icon: "vercel" }
     ]
   },
   {
@@ -181,25 +161,14 @@ const expertiseBands = [
     summary: "Model selection, agent orchestration, NLP, retrieval, and the tooling layer that turns AI features into working products.",
     highlight: "This is where I connect model capability to product usefulness: orchestration, embeddings, evaluation, and inference patterns that behave in production.",
     tools: [
-      { name: "Claude", icon: "anthropic" },
-      { name: "Gemini", icon: "googlegemini" },
       { name: "OpenAI", icon: "data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z' fill='white'/%3E%3C/svg%3E" },
       { name: "Groq", icon: "data:image/svg+xml,%3Csvg viewBox='0 0 320 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M296 160H180.6l42.6-129.8C227.2 15 215.7 0 200 0H56C44 0 33.8 8.9 32.2 20.8l-32 240C-1.7 275.2 9.5 288 24 288h118.7L96.6 482.5c-3.6 15.2 8 29.5 23.3 29.5 8.4 0 16.4-4.4 20.8-12l176-304c9.3-15.9-2.2-36-20.7-36z' fill='white'/%3E%3C/svg%3E" },
-      { name: "DeepSeek", icon: "deepseek" },
       { name: "LangChain", icon: "langchain" },
-      { name: "LangGraph", icon: "langchain" },
-      { name: "Ollama", icon: "ollama" },
       { name: "Hugging Face", icon: "huggingface" },
       { name: "PyTorch", icon: "pytorch" },
       { name: "TensorFlow", icon: "tensorflow" },
-      { name: "spaCy", icon: "spacy" },
       { name: "ONNX Runtime", icon: "onnx" },
-      { name: "Scikit-learn", icon: "scikitlearn" },
-      { name: "Sentence-Transformers", icon: "huggingface" },
-      { name: "Pandas", icon: "pandas" },
-      { name: "Git", icon: "git" },
-      { name: "GitHub", icon: "github" },
-      { name: "Postman", icon: "postman" }
+      { name: "Scikit-learn", icon: "scikitlearn" }
     ]
   }
 ];
@@ -212,9 +181,11 @@ const services = [
     outcome: "From messy inputs to reliable AI workflows with clear system boundaries.",
     description:
       "Production backends where models do real work: retrieval, reasoning, validation, and structured output.",
-    proofs: ["Agentic retrieval", "Guardrails + evals", "Async queues"],
+    proofs: ["Agentic retrieval", "Guardrails + evals", "Async queues", "Observability & logging"],
     tools: ["LangGraph", "Agentic RAG", "Postgres", "Redis queues"],
-    flow: ["Input", "Reason", "Validate", "Respond"],
+    kicker: "LangGraph / Agentic RAG / Postgres // Redis queues",
+    icon: "cube",
+    layout: "proofs",
     tone: "pipeline",
   },
   {
@@ -225,7 +196,13 @@ const services = [
       "I own the full path: backend contracts, frontend interaction, deployment, and the final feel of the product.",
     proofs: ["System design", "UI delivery", "Deployment"],
     tools: ["Next.js", "TypeScript", "FastAPI", "Postgres"],
-    flow: ["Schema", "API", "UI", "Launch"],
+    kicker: "Next.js / TypeScript / FastAPI // Postgres",
+    icon: "code",
+    layout: "split",
+    groups: [
+      { label: "Build", items: ["System design", "Data modeling", "API design"] },
+      { label: "Deliver", items: ["UI delivery", "Deployment", "Monitoring"] },
+    ],
     tone: "surface",
   },
   {
@@ -236,7 +213,15 @@ const services = [
       "Vision models, extraction pipelines, and validation layers built for operational use instead of demos.",
     proofs: ["RAG over docs", "Normalization logic", "Structured exports"],
     tools: ["Gemini Vision", "PyMuPDF", "Claude", "LangGraph"],
-    flow: ["Capture", "Extract", "Normalize", "Export"],
+    kicker: "Gemini Vision / PyMuPDF / Claude // LangGraph",
+    icon: "file",
+    layout: "flow",
+    flow: [
+      ["Ingest", "PDF / Scan"],
+      ["Extract", "Vision / OCR"],
+      ["Validate", "Rules / Logic"],
+      ["Export", "Structured"],
+    ],
     tone: "document",
   },
   {
@@ -245,9 +230,11 @@ const services = [
     outcome: "Language models woven into existing products so the workflow improves without the product breaking.",
     description:
       "I integrate AI where it belongs: search, copilots, automation, and internal tools that respect the rest of the stack.",
-    proofs: ["Workflow automation", "Internal copilots", "API tooling"],
+    proofs: ["Workflow automation", "Internal copilots", "API tooling", "Webhooks & events"],
     tools: ["OpenAI", "Claude", "Tool calling", "Webhooks"],
-    flow: ["Connect", "Augment", "Automate", "Measure"],
+    kicker: "OpenAI / Claude / Tool calling // Webhooks",
+    icon: "link",
+    layout: "timeline",
     tone: "integration",
   },
 ];
@@ -260,7 +247,7 @@ const heroSocials = [
   },
   {
     label: "LinkedIn",
-    href: "https://linkedin.com/in/aarav-singh-3a6351289",
+    href: "https://linkedin.com/in/aaravkashyapsingh",
     path: "M5.34 20.45H1.73V8.84h3.61v11.61ZM3.53 7.25a2.09 2.09 0 1 1 0-4.18 2.09 2.09 0 0 1 0 4.18Zm16.92 13.2h-3.6v-5.65c0-1.35-.03-3.08-1.88-3.08-1.88 0-2.17 1.47-2.17 2.98v5.75H9.2V8.84h3.46v1.59h.05c.48-.91 1.66-1.88 3.42-1.88 3.66 0 4.33 2.41 4.33 5.54v6.36Z",
   },
   {
@@ -308,7 +295,7 @@ const contactActions = [
 const contactLinks = [
   { label: "Email", href: "mailto:aaravkashyap1203@gmail.com" },
   { label: "GitHub", href: "https://github.com/AaravKashyap12" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/aarav-singh-3a6351289" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/aaravkashyapsingh" },
   { label: "X / Notes", href: "https://x.com/byaarav" },
 ];
 
@@ -323,9 +310,144 @@ const contactMarquee = [
 
 const opensNewTab = (href: string) => href.startsWith("http") || href.startsWith("mailto:");
 
+function ServiceIcon({ icon }: { icon: string }) {
+  if (icon === "cube") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m12 3 7.5 4.25v9.5L12 21l-7.5-4.25v-9.5L12 3Z" />
+        <path d="m4.5 7.25 7.5 4.25 7.5-4.25" />
+        <path d="M12 11.5V21" />
+        <path d="m8.6 9.2 6.8-3.85" />
+      </svg>
+    );
+  }
+
+  if (icon === "code") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m9 7-5 5 5 5" />
+        <path d="m15 7 5 5-5 5" />
+        <path d="m13 5-2 14" />
+      </svg>
+    );
+  }
+
+  if (icon === "file") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 3.5h6.4L18 8.1v12.4H7V3.5Z" />
+        <path d="M13 3.8V8h4.2" />
+        <path d="M9.5 12h5" />
+        <path d="M9.5 15.4h4" />
+      </svg>
+    );
+  }
+
+  if (icon === "link") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10.2 13.8a4 4 0 0 0 5.66 0l2.1-2.1a4 4 0 0 0-5.66-5.66l-1.2 1.2" />
+        <path d="M13.8 10.2a4 4 0 0 0-5.66 0l-2.1 2.1a4 4 0 0 0 5.66 5.66l1.2-1.2" />
+      </svg>
+    );
+  }
+
+  if (icon === "bolt") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M13 2.8 5.8 13h5.4L10 21.2 18.2 10h-5.5L13 2.8Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "target") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z" />
+        <path d="M12 16.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z" />
+        <path d="M12 12h.01" />
+      </svg>
+    );
+  }
+
+  if (icon === "user") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 12.2a3.9 3.9 0 1 0 0-7.8 3.9 3.9 0 0 0 0 7.8Z" />
+        <path d="M5.2 20c.8-3.5 3.2-5.3 6.8-5.3s6 1.8 6.8 5.3" />
+      </svg>
+    );
+  }
+
+  if (icon === "rocket") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14.7 4.4c1.5-.9 3.2-1.3 5.1-1.2.1 1.9-.3 3.6-1.2 5.1-1 1.7-2.6 3.4-4.8 5.1l-3.2 2.5-2.5-2.5 2.5-3.2c1.7-2.2 3.4-3.8 5.1-4.8Z" />
+        <path d="m8.5 14.8-2.6.4.4-2.6" />
+        <path d="m10.7 15.9-1 3.3-2-2" />
+        <path d="m8.1 13.3-3.3 1 2 2" />
+        <path d="M15.5 8.5h.01" />
+      </svg>
+    );
+  }
+
+  if (icon === "wifi") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4.5 9.5a11.4 11.4 0 0 1 15 0" />
+        <path d="M7.8 12.8a6.6 6.6 0 0 1 8.4 0" />
+        <path d="M10.7 16a2.4 2.4 0 0 1 2.6 0" />
+        <path d="M12 19h.01" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v18" />
+      <path d="M3 12h18" />
+    </svg>
+  );
+}
+
+function ProjectActionIcon({ icon }: { icon: "github" | "globe" | "lock" | "soon" }) {
+  if (icon === "github") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d={heroSocials[0].path} fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (icon === "globe") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 21.5a9.5 9.5 0 1 0 0-19 9.5 9.5 0 0 0 0 19Z" />
+        <path d="M3 12h18" />
+        <path d="M12 2.5c2.18 2.42 3.26 5.58 3.26 9.5s-1.08 7.08-3.26 9.5c-2.18-2.42-3.26-5.58-3.26-9.5S9.82 4.92 12 2.5Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "lock") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 10V8a5 5 0 0 1 10 0v2" />
+        <path d="M6 10h12v10H6z" />
+        <path d="M12 14v2.5" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14" />
+      <path d="M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export default function Portfolio() {
-  const [activeProject, setActiveProject] = useState<typeof projects[0] | null>(null);
-  const [expandedArchitecture, setExpandedArchitecture] = useState(false);
   const [heroStats, setHeroStats] = useState({ totalViews: 0, liveViewers: 1 });
   const [onekoAwake, setOnekoAwake] = useState(false);
   const [onekoPing, setOnekoPing] = useState(false);
@@ -353,6 +475,39 @@ export default function Portfolio() {
     ],
     [heroStats]
   );
+
+  const resetServiceCardMotion = (card: HTMLElement) => {
+    card.style.setProperty("--mx", "50%");
+    card.style.setProperty("--my", "0%");
+    card.style.setProperty("--rx", "0deg");
+    card.style.setProperty("--ry", "0deg");
+  };
+
+  const handleServiceCardPointerMove = (event: ReactPointerEvent<HTMLElement>) => {
+    if (
+      event.pointerType === "touch" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return;
+    }
+
+    const card = event.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+    const y = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+    const rotateX = (0.5 - y) * 4;
+    const rotateY = (x - 0.5) * 4;
+
+    card.style.setProperty("--mx", `${(x * 100).toFixed(2)}%`);
+    card.style.setProperty("--my", `${(y * 100).toFixed(2)}%`);
+    card.style.setProperty("--rx", `${rotateX.toFixed(2)}deg`);
+    card.style.setProperty("--ry", `${rotateY.toFixed(2)}deg`);
+  };
+
+  const handleServiceCardPointerLeave = (event: ReactPointerEvent<HTMLElement>) => {
+    resetServiceCardMotion(event.currentTarget);
+  };
 
   useEffect(() => {
     const clearPointerState = () => {
@@ -778,6 +933,7 @@ export default function Portfolio() {
       const cards = query<HTMLElement>(".service-card");
       const visualSteps = query<HTMLElement>(".service-flow-step");
       const rail = query(".services-rail")[0];
+      const compactServicesLayout = window.matchMedia("(min-width: 1200px)").matches;
 
       if (rail) {
         gsap.fromTo(
@@ -797,39 +953,43 @@ export default function Portfolio() {
         );
       }
 
-      cards.forEach((card, index) => {
-        gsap.fromTo(
-          card,
-          { opacity: 0.18, y: 84, scale: 0.97 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 86%",
-              end: "top 42%",
-              scrub: true,
-            },
+      if (compactServicesLayout) {
+        gsap.set(cards, { opacity: 1, clearProps: "transform" });
+      } else {
+        cards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0.18, y: 84, scale: 0.97 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 86%",
+                end: "top 42%",
+                scrub: true,
+              },
+            }
+          );
+
+          if (index < cards.length - 1) {
+            gsap.to(card, {
+              y: -18,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                start: "bottom bottom",
+                end: "bottom top",
+                scrub: true,
+              },
+            });
           }
-        );
+        });
+      }
 
-        if (index < cards.length - 1) {
-          gsap.to(card, {
-            y: -18,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "bottom bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          });
-        }
-      });
-
-      if (visualSteps.length) {
+      if (!compactServicesLayout && visualSteps.length) {
         gsap.fromTo(
           visualSteps,
           { opacity: 0.18, scaleX: 0.82 },
@@ -1025,16 +1185,24 @@ export default function Portfolio() {
         <div className="wrap">
           <div className="about-grid">
             <div className="about-body r">
-              <div className="section-label">Process Signals</div>
-              <h2 className="section-title">Thoughtful<br />engineer.</h2>
-              <p>I&apos;m Aarav Kashyap Singh, also known as Aarav Kashyap and byaarav, a 21 year old AI engineer from India.</p>
-              <p>I don&apos;t build things to add them to a resume. I build them because something bothered me: a problem felt unsolved, a system felt broken, a better way felt obvious.</p>
+              <div className="section-label">Engineering Signals</div>
+              <h2 className="section-title about-title">
+                <span>Thoughtful</span>
+                <span>engineer<span className="about-title-dot">.</span></span>
+              </h2>
+              <p>I&apos;m Aarav Kashyap Singh, a 21 year old AI engineer from India building production-grade AI systems across product, backend, and automation.</p>
+              <p>I do my best work where a workflow feels broken, a product needs sharper thinking, or an AI feature has to become reliable enough for real users.</p>
               <p>Right now I&apos;m finishing my undergrad and shipping production-grade AI systems. Not demos. Not tutorials. Things that actually run.</p>
+              <div className="about-signal-rule" aria-hidden="true" />
             </div>
             <div className="about-facts facts-panel r d2">
-              {facts.map(([number, title, copy]) => (
+              {facts.map(([number, title, copy], index) => (
                 <div className="fact" key={title}>
+                  <span className="fact-icon">
+                    <ServiceIcon icon={factIcons[index]} />
+                  </span>
                   <div className="fact-n">{number}</div>
+                  <span className="fact-divider" aria-hidden="true" />
                   <div className="fact-copy"><strong>{title}</strong><span>{copy}</span></div>
                 </div>
               ))}
@@ -1049,32 +1217,30 @@ export default function Portfolio() {
         <div className="wrap projects-shell">
           <div className="proj-header r">
             <div className="projects-rail">
-              <div className="section-label">Selected Work</div>
-              <h2 className="projects-display">Projects that shipped.</h2>
+              <div className="section-label">Featured Work</div>
+              <h2 className="projects-display">Projects</h2>
               <p className="projects-intro">
-                Not concept work. Not placeholder case studies. These are the builds where the system, the interface, and the product logic had to hold together under real use.
+                A selection of product-focused builds, from AI tools to fullstack platforms and real-time dashboards.
               </p>
-              <div className="projects-rail-notes">
-                <span>Production-minded</span>
-                <span>Backend depth</span>
-                <span>Useful AI</span>
-              </div>
             </div>
             <a className="link-arrow projects-link" href="#contact">Build with me -&gt;</a>
           </div>
           <div className="proj-grid r d1">
             {projects.map((project) => (
               <div
-                className={`proj-card proj-card-${project.layout} ${project.style === "in-progress" ? "proj-in-progress" : ""}`}
+                className={`proj-card proj-card-${project.layout}`}
                 key={project.title}
-                onClick={() => {
-                  if (project.style === "in-progress") return;
-                  setExpandedArchitecture(false);
-                  setActiveProject(project);
-                }}
               >
-                {project.style === "in-progress" && <div className="proj-badge">IN PROGRESS</div>}
-                <span className="proj-arrow">-&gt;</span>
+                <div className="proj-card-visual">
+                  <Image
+                    src={project.cardImageSrc}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1100px) 50vw, 31vw"
+                    className="proj-card-visual-image proj-card-visual-image-custom"
+                  />
+                  <span className="proj-card-visual-label">{project.cardStatus || project.status}</span>
+                </div>
                 <div className="proj-card-top">
                   <div>
                     <div className="proj-num">{project.tagline}</div>
@@ -1082,220 +1248,58 @@ export default function Portfolio() {
                   </div>
                 </div>
                 <p className="proj-desc">{project.description}</p>
-                <p className="proj-summary">{project.summary}</p>
                 <div className="proj-metrics">
-                  <span className="proj-metric proj-metric-status">{project.cardStatus || project.status}</span>
                   {project.cardMetrics.map((metric) => (
                     <span className="proj-metric" key={metric}>{metric}</span>
                   ))}
                 </div>
-                {project.style !== "in-progress" ? (
-                  <>
-                    <div className="proj-workflow">
-                      {project.workflow.map((step, index) => (
-                        <div className="proj-workflow-step" key={step}>
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          <strong>{step}</strong>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="proj-card-foot">
-                      <div className="proj-stack">
-                        {project.tags.map((tag) => <span className="badge" key={tag}>{tag}</span>)}
-                      </div>
-                      <span className="proj-open">Open dossier</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="proj-tease-copy">
-                    <span>{project.role}</span>
-                    <span>{project.summary}</span>
+                <div className="proj-stack">
+                  {project.tags.slice(0, 4).map((tag) => <span className="badge" key={tag}>{tag}</span>)}
+                </div>
+                <div className="proj-card-foot">
+                  <div className="proj-actions" aria-label={`${project.title} links`}>
+                    {project.githubUrl ? (
+                      <a
+                        className="proj-action"
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open ${project.title} on GitHub`}
+                        title="GitHub"
+                        onMouseDown={(event) => event.stopPropagation()}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <ProjectActionIcon icon="github" />
+                        <span className="proj-action-label">GitHub</span>
+                      </a>
+                    ) : (
+                      <span className="proj-action proj-action-private" aria-label="Private repository" title="Private repository">
+                        <ProjectActionIcon icon="lock" />
+                        <span className="proj-action-label">Private</span>
+                      </span>
+                    )}
+                    {project.demoUrl && (
+                      <a
+                        className="proj-action"
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open ${project.title} live site`}
+                        title="Live site"
+                        onMouseDown={(event) => event.stopPropagation()}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <ProjectActionIcon icon="globe" />
+                        <span className="proj-action-label">Live Demo</span>
+                      </a>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-      <AnimatePresence>
-        {activeProject && (
-          <motion.div
-            key="modal-overlay"
-            className="proj-modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => {
-              setExpandedArchitecture(false);
-              setActiveProject(null);
-            }}
-          >
-            <motion.div
-              className="proj-modal"
-              initial={{ y: "100%", opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className="proj-modal-close"
-                onClick={() => {
-                  setExpandedArchitecture(false);
-                  setActiveProject(null);
-                }}
-                aria-label="Close project dossier"
-              >
-                x
-              </button>
-
-              <div className="pm-header">
-                <div className="pm-header-main">
-                  <span className="pm-tag">{activeProject.tagline}</span>
-                  <h3 className="pm-title">{activeProject.title}</h3>
-                  <p className="pm-summary">{activeProject.summary}</p>
-                </div>
-                <div className="pm-header-status">
-                  <span>{activeProject.category}</span>
-                  <strong>{activeProject.status}</strong>
-                </div>
-              </div>
-
-              <div className="pm-meta-grid">
-                {activeProject.facts.map(([label, value]) => (
-                  <div className="pm-fact" key={label}>
-                    <span>{label}</span>
-                    <strong>{value}</strong>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pm-body">
-                <div className="pm-left">
-                  <div className="pm-section">
-                    <h4>Why this existed</h4>
-                    <p>{activeProject.why}</p>
-                  </div>
-                  <div className="pm-section">
-                    <h4>What I owned</h4>
-                    <p>{activeProject.role}</p>
-                  </div>
-                  <div className="pm-section">
-                    <h4>Outcome</h4>
-                    <p>{activeProject.impact}</p>
-                  </div>
-                  <div className="pm-section">
-                    <h4>Tech Stack</h4>
-                    <div className="pm-stack">
-                      {activeProject.tags.map((tag) => <span className="badge" key={tag}>{tag}</span>)}
-                    </div>
-                  </div>
-                  <div className="pm-section">
-                    <h4>System flow</h4>
-                    <div className="pm-flow">
-                      {activeProject.workflow.map((step, index) => (
-                        <div className="pm-flow-step" key={step}>
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          <strong>{step}</strong>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pm-right">
-                  <div className="pm-action-row">
-                    {activeProject.githubUrl ? (
-                      <a href={activeProject.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-outline">{activeProject.githubText}</a>
-                    ) : (
-                      <span className="btn-outline disabled">{activeProject.githubText || "Private Repo"}</span>
-                    )}
-                    {activeProject.demoUrl && (
-                      <a href={activeProject.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-outline">{activeProject.demoText}</a>
-                    )}
-                  </div>
-                  {activeProject.architectureSrc ? (
-                    <div className="pm-diagram-shell">
-                      <button
-                        type="button"
-                        className="pm-diagram-button"
-                        onClick={() => setExpandedArchitecture(true)}
-                        aria-label={`View full ${activeProject.title} architecture`}
-                      >
-                        <div className="pm-diagram">
-                          <Image
-                            src={activeProject.architectureSrc}
-                            alt={`${activeProject.title} architecture diagram`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 42vw"
-                            className="pm-diagram-image"
-                          />
-                          <div className="pm-diagram-overlay">
-                            <span className="pm-diagram-kicker">Workflow Preview</span>
-                            <span className="pm-diagram-cta">Expand full workflow</span>
-                          </div>
-                        </div>
-                      </button>
-                      <p className="pm-diagram-caption">Open the full architecture to inspect every stage clearly.</p>
-                    </div>
-                  ) : (
-                    <div className="pm-diagram pm-diagram-empty">
-                      <span>Architecture locked for now</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {activeProject?.architectureSrc && expandedArchitecture && (
-          <motion.div
-            key="architecture-lightbox"
-            className="architecture-lightbox-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setExpandedArchitecture(false)}
-          >
-            <motion.div
-              className="architecture-lightbox"
-              initial={{ y: 24, opacity: 0, scale: 0.98 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 24, opacity: 0, scale: 0.98 }}
-              transition={{ type: "spring", damping: 24, stiffness: 220 }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="architecture-lightbox-head">
-                <div>
-                  <span className="architecture-lightbox-kicker">Full Workflow</span>
-                  <h4>{activeProject.title}</h4>
-                </div>
-                <button
-                  type="button"
-                  className="architecture-lightbox-close"
-                  onClick={() => setExpandedArchitecture(false)}
-                  aria-label="Close architecture viewer"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="architecture-lightbox-frame">
-                <Image
-                  src={activeProject.architectureSrc}
-                  alt={`${activeProject.title} architecture diagram`}
-                  fill
-                  sizes="(max-width: 768px) calc(100vw - 2rem), 88vw"
-                  className="architecture-lightbox-image"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="divider" />
 
@@ -1324,8 +1328,8 @@ export default function Portfolio() {
                   <span>APIs, queues, and data models that hold up under real usage.</span>
                 </div>
                 <div>
-                  <strong>AI that behaves</strong>
-                  <span>Model features with orchestration, evaluation, and usable outputs.</span>
+                  <strong>Pragmatic AI</strong>
+                  <span>AI that solves real problems and ships as working products.</span>
                 </div>
               </div>
             </div>
@@ -1336,12 +1340,12 @@ export default function Portfolio() {
                 <div className="expertise-band-top">
                   <span className="expertise-band-num">{band.num}</span>
                   <div className="expertise-band-heading">
-                    <h3>{band.title}</h3>
                     <span>{band.tools.length} tools</span>
                   </div>
                 </div>
                 <div className="expertise-band-body">
                   <div className="expertise-band-copy">
+                    <h3 className="expertise-band-title">{band.title}</h3>
                     <p className="expertise-band-summary">{band.summary}</p>
                     <p className="expertise-band-highlight">{band.highlight}</p>
                   </div>
@@ -1372,6 +1376,7 @@ export default function Portfolio() {
       <div className="divider" />
 
       <section id="services" className="section services-chapter" ref={servicesRef}>
+        <div className="services-motion-character" aria-hidden="true" />
         <div className="wrap services-shell">
           <div className="services-rail">
             <div className="section-label">Capabilities</div>
@@ -1406,11 +1411,18 @@ export default function Portfolio() {
 
           <div className="services-stack">
             {services.map((service) => (
-              <article className={`service-card service-card-${service.tone}`} key={service.num}>
+              <article
+                className={`service-card service-card-${service.tone} service-card-layout-${service.layout}`}
+                key={service.num}
+                onPointerMove={handleServiceCardPointerMove}
+                onPointerLeave={handleServiceCardPointerLeave}
+              >
                 <div className="service-card-top">
                   <span className="service-card-num">{service.num}</span>
-                  <span className="service-card-rule" />
-                  <span className="service-card-kicker">{service.tools.join(" / ")}</span>
+                  <span className="service-card-icon">
+                    <ServiceIcon icon={service.icon} />
+                  </span>
+                  <span className="service-card-kicker">{service.kicker}</span>
                 </div>
 
                 <div className="service-card-body">
@@ -1419,29 +1431,65 @@ export default function Portfolio() {
                     <p className="service-card-outcome">{service.outcome}</p>
                     <p className="service-card-description">{service.description}</p>
 
-                    <ul className="service-proof-list">
-                      {service.proofs.map((proof) => (
-                        <li key={proof}>{proof}</li>
-                      ))}
-                    </ul>
+                    {service.layout === "proofs" && (
+                      <ul className="service-proof-list service-proof-list-iconic">
+                        {service.proofs.map((proof, index) => (
+                          <li key={proof}>
+                            <span className="service-proof-icon">
+                              <ServiceIcon icon={index === 0 ? "cube" : index === 1 ? "target" : index === 2 ? "link" : "bolt"} />
+                            </span>
+                            <span>{proof}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {service.layout === "split" && (
+                      <div className="service-split-board">
+                        {service.groups?.map((group) => (
+                          <div className="service-split-col" key={group.label}>
+                            <span className="service-split-label">{group.label}</span>
+                            {group.items.map((item) => (
+                              <span className="service-split-item" key={item}>{item}</span>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {service.layout === "flow" && (
+                      <div className="service-mini-flow">
+                        {service.flow?.map(([label, detail], index) => (
+                          <div className="service-mini-flow-group" key={label}>
+                            <div className="service-mini-flow-step">
+                              <span className="service-mini-flow-icon">
+                                <ServiceIcon icon={index === 0 ? "cube" : index === 1 ? "file" : index === 2 ? "target" : "bolt"} />
+                              </span>
+                              <strong>{label}</strong>
+                              <span>{detail}</span>
+                            </div>
+                            {index < (service.flow?.length ?? 0) - 1 && <span className="service-mini-flow-arrow">-&gt;</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {service.layout === "timeline" && (
+                      <div className="service-timeline">
+                        {service.proofs.map((proof, index) => (
+                          <div className="service-timeline-item" key={proof}>
+                            <span>{proof}</span>
+                            <ServiceIcon icon={index === 0 ? "bolt" : index === 1 ? "user" : index === 2 ? "code" : "wifi"} />
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="service-tool-row">
                       {service.tools.map((tool) => (
                         <span key={tool}>{tool}</span>
                       ))}
                     </div>
-                  </div>
-
-                  <div className="service-card-visual" aria-hidden="true">
-                    <div className="service-flow">
-                      {service.flow.map((step, index) => (
-                        <div className="service-flow-step" key={step}>
-                          <span className="service-flow-index">0{index + 1}</span>
-                          <span className="service-flow-label">{step}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="service-visual-caption">workflow sketch</div>
                   </div>
                 </div>
               </article>

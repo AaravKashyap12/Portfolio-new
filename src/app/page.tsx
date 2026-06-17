@@ -1190,7 +1190,7 @@ export default function Portfolio() {
                 <span>Thoughtful</span>
                 <span>engineer<span className="about-title-dot">.</span></span>
               </h2>
-              <p>I&apos;m Aarav Kashyap Singh, a 21 year old AI engineer from India building production-grade AI systems across product, backend, and automation.</p>
+              <p>Aarav Kashyap Singh (byaarav) is an AI engineer building agentic RAG systems, backend workflows, and automation tools.</p>
               <p>I do my best work where a workflow feels broken, a product needs sharper thinking, or an AI feature has to become reliable enough for real users.</p>
               <p>Right now I&apos;m finishing my undergrad and shipping production-grade AI systems. Not demos. Not tutorials. Things that actually run.</p>
               <div className="about-signal-rule" aria-hidden="true" />

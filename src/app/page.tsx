@@ -48,6 +48,7 @@ const projects = [
     demoUrl: null,
     impact: "Replaced hours of manual review with a single upload",
     cardImageSrc: "/project-cards/clearflow-card-v3.png",
+    cardImageAlt: "ClearFlow AI bank statement analysis workflow preview",
     architectureSrc: "/architectures/clearflow-architecture.png",
     summary: "Document ingestion, extraction, validation, and export layered into one dependable internal workflow.",
     role: "Owned product shape, backend pipeline, extraction logic, and the internal frontend surface.",
@@ -73,6 +74,7 @@ const projects = [
     demoUrl: "https://talentmatch-v1.vercel.app",
     impact: "90%+ test coverage with a production-ready ML pipeline",
     cardImageSrc: "/project-cards/talentmatch-card-v3.png",
+    cardImageAlt: "TalentMatch AI recruiting copilot interface preview",
     architectureSrc: "/architectures/talentmatch-architecture.png",
     summary: "Resume parsing, semantic scoring, and recruiter-facing analysis views built for better hiring decisions.",
     role: "Designed the ranking logic, evaluation flow, and hiring-facing interface.",
@@ -98,6 +100,7 @@ const projects = [
     demoUrl: "https://cryptoquant.vercel.app",
     impact: "Hybrid LSTM + 1D-CNN with sentiment-aware Fear and Greed Index integration",
     cardImageSrc: "/project-cards/cryptoquant-card-v3.png",
+    cardImageAlt: "CryptoQuant real-time crypto analytics dashboard preview",
     architectureSrc: "/architectures/cryptoquant-architecture.png",
     summary: "Market streams, forecasting models, confidence intervals, and clean charting tied into a single analysis loop.",
     role: "Built the prediction pipeline, data flow, and dashboard layer from scratch.",
@@ -1106,9 +1109,7 @@ export default function Portfolio() {
           </div>
 
           <h1 className="hero-headline" aria-label="Aarav Kashyap Singh" data-cat-target="name">
-            <div className="word"><span>AARAV</span></div>
-            <div className="word"><span>KASHYAP</span></div>
-            <div className="word"><span>SINGH</span></div>
+            {"AARAV\nKASHYAP\nSINGH"}
           </h1>
 
           <div className="hero-sub-row">
@@ -1234,7 +1235,7 @@ export default function Portfolio() {
                 <div className="proj-card-visual">
                   <Image
                     src={project.cardImageSrc}
-                    alt=""
+                    alt={project.cardImageAlt}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1100px) 50vw, 31vw"
                     className="proj-card-visual-image proj-card-visual-image-custom"

@@ -1291,6 +1291,7 @@ header {
   color: var(--fg);
   margin-bottom: 2.2rem;
   overflow: hidden;
+  white-space: pre-line;
 }
 
 .hero-headline .word {

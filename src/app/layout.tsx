@@ -56,7 +56,7 @@ const structuredData = {
       familyName: "Singh",
       additionalName: "Kashyap",
       url: siteUrl,
-      image: `${siteUrl}/og-image.svg`,
+      image: `${siteUrl}/og-image.png`,
       jobTitle: "AI Engineer and Full Stack Developer",
       description:
         "Aarav Kashyap Singh, also known as Aarav Kashyap and byaarav, is an AI Engineer and Full Stack Developer from India.",
@@ -75,8 +75,6 @@ const structuredData = {
         name: "India",
       },
       knowsAbout: [
-        "Aarav Kashyap",
-        "Aarav Kashyap Singh",
         "AI engineering",
         "Full stack development",
         "Agentic RAG systems",
@@ -86,10 +84,6 @@ const structuredData = {
         "Next.js",
         "Automation workflows",
       ],
-      alumniOf: {
-        "@type": "CollegeOrUniversity",
-        name: "Undergraduate student",
-      },
     },
   ],
 };
@@ -146,11 +140,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
-  other: {
-    "profile:first_name": "Aarav",
-    "profile:last_name": "Kashyap Singh",
-    "profile:username": "byaarav",
-  },
   openGraph: {
     title: siteTitle,
     description: siteDescription,
@@ -160,9 +149,10 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
+        type: "image/png",
         alt: "Aarav Kashyap Singh - AI Engineer and Full Stack Developer",
       },
     ],
@@ -172,7 +162,7 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     creator: "@byaarav",
-    images: ["/og-image.svg"],
+    images: ["/og-image.png"],
   },
   icons: {
     icon: [

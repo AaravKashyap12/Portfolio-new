@@ -1188,10 +1188,9 @@ export default function Portfolio() {
             <div className="about-body r">
               <div className="section-label">Engineering Signals</div>
               <h2 className="section-title about-title">
-                <span>Thoughtful</span>
-                <span>engineer<span className="about-title-dot">.</span></span>
+                {"AI systems\nengineer."}
               </h2>
-              <p>Aarav Kashyap Singh (byaarav) is an AI engineer building agentic RAG systems, backend workflows, and automation tools.</p>
+              <p>Aarav Kashyap Singh (byaarav) builds AI systems, agentic RAG, backend workflows, and automation tools.</p>
               <p>I do my best work where a workflow feels broken, a product needs sharper thinking, or an AI feature has to become reliable enough for real users.</p>
               <p>Right now I&apos;m finishing my undergrad and shipping production-grade AI systems. Not demos. Not tutorials. Things that actually run.</p>
               <div className="about-signal-rule" aria-hidden="true" />

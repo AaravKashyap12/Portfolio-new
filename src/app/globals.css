@@ -1862,7 +1862,8 @@ header {
 }
 
 .about-title {
-  display: grid;
+  display: block;
+  white-space: pre-line;
 }
 
 .about-title-dot {
